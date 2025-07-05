@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $contact = $_POST['contact'];
 
-    // ✅ FIXED: Proper update with SQL included
+    // Update user's profile in users table
     $updateSql = "UPDATE users SET name = ?, contact = ? WHERE id = ?";
     sqlsrv_query($conn, $updateSql, array($name, $contact, $attendee_id));
 
@@ -51,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ⚠ You are already registered for this event.
                 </div>";
     } else {
-        // ✅ Insert into registrations with contact snapshot
-        $insertSql = "INSERT INTO registrations (attendee_id, event_id, contact) VALUES (?, ?, ?)";
-        sqlsrv_query($conn, $insertSql, array($attendee_id, $event_id, $contact));
+        // ✅ Insert registration snapshot
+        $insertSql = "INSERT INTO registrations (attendee_id, attendee_name, contact, event_id) VALUES (?, ?, ?, ?)";
+        sqlsrv_query($conn, $insertSql, array($attendee_id, $name, $contact, $event_id));
 
         $msg = "<div class='alert alert-success shadow-sm text-center fs-5'>
                     🎉 Successfully registered <strong>$name ($contact)</strong> for <strong>" . htmlspecialchars($ev['title']) . "</strong>!
