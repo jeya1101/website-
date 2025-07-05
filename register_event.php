@@ -38,11 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $contact = $_POST['contact'];
 
-    // Update user details
+    // Update user profile
     $updateSql = "UPDATE users SET name = ?, contact = ? WHERE id = ?";
     sqlsrv_query($conn, $updateSql, array($name, $contact, $attendee_id));
 
-    // Check existing registration
+    // Check if already registered
     $checkSql = "SELECT * FROM registrations WHERE attendee_id = ? AND event_id = ?";
     $checkStmt = sqlsrv_query($conn, $checkSql, array($attendee_id, $event_id));
 
@@ -51,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ⚠ You are already registered for this event.
                 </div>";
     } else {
-        // Insert registration
-        $insertSql = "INSERT INTO registrations (attendee_id, event_id) VALUES (?, ?)";
-        sqlsrv_query($conn, $insertSql, array($attendee_id, $event_id));
+        // Insert into registrations with phone
+        $insertSql = "INSERT INTO registrations (attendee_id, event_id, phone) VALUES (?, ?, ?)";
+        sqlsrv_query($conn, $insertSql, array($attendee_id, $event_id, $contact));
 
         $msg = "<div class='alert alert-success shadow-sm text-center fs-5'>
                     🎉 Successfully registered <strong>$name ($contact)</strong> for <strong>" . htmlspecialchars($ev['title']) . "</strong>!
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container">
   <h1 class="text-center mt-4">Event Registration</h1>
 
-  <!-- Success or warning message displayed outside the container -->
+  <!-- Success or warning message outside card -->
   <?= $msg ?>
 
   <div class="card p-4 shadow-sm mt-3">
