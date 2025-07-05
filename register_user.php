@@ -1,0 +1,71 @@
+<?php
+include('db.php');
+$msg = "";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name     = $_POST['name'];
+    $contact  = $_POST['contact'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $repass   = $_POST['repassword'];
+    $role     = $_POST['role'];
+
+    // Check if username already exists
+    $checkSql = "SELECT id FROM users WHERE username = ?";
+    $checkParams = array($username);
+    $checkStmt = sqlsrv_query($conn, $checkSql, $checkParams);
+
+    if ($checkStmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    if (sqlsrv_fetch_array($checkStmt, SQLSRV_FETCH_ASSOC)) {
+        $msg = '<div class="alert alert-danger">Username already exists.</div>';
+    } elseif ($password !== $repass) {
+        $msg = '<div class="alert alert-danger">Passwords do not match.</div>';
+    } else {
+        // Insert new user
+        $insertSql = "INSERT INTO users (name, username, password, role) VALUES (?, ?, ?, ?)";
+        $insertParams = array($name, $username, $password, $role);
+        $insertStmt = sqlsrv_query($conn, $insertSql, $insertParams);
+
+        if ($insertStmt === false) {
+            die(print_r(sqlsrv_errors(), true));
+        }
+
+        $msg = '<div class="alert alert-success">Registration successful. <a href="login.php">Login here</a></div>';
+    }
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sign Up</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container d-flex justify-content-center align-items-center vh-100">
+  <div class="card p-4 shadow" style="width: 28rem;">
+    <h3 class="card-title mb-3 text-center">Create Account</h3>
+    <?= $msg ?>
+    <form method="POST">
+      <div class="mb-3"><label class="form-label">Full Name</label><input name="name" class="form-control" required></div>
+      <div class="mb-3"><label class="form-label">Contact</label><input name="contact" class="form-control" required></div>
+      <div class="mb-3"><label class="form-label">Username</label><input name="username" class="form-control" required></div>
+      <div class="mb-3"><label class="form-label">Password</label><input type="password" name="password" class="form-control" required></div>
+      <div class="mb-3"><label class="form-label">Confirm Password</label><input type="password" name="repassword" class="form-control" required></div>
+      <div class="mb-3"><label class="form-label">Role</label>
+        <select name="role" class="form-select" required>
+          <option value="" disabled selected>-- Choose Role --</option>
+          <option value="organizer">Event Organizer</option>
+          <option value="attendee">Attendee</option>
+        </select>
+      </div>
+      <button class="btn btn-success w-100">Sign up</button>
+    </form>
+    <p class="mt-3 text-center">Already have an account? <a href="login.php">Sign in</a></p>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
