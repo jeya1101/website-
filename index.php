@@ -23,16 +23,16 @@ if ($user_id) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-    background: url('index.jpg') center center no-repeat;
-    background-size: cover;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
+      background: url('index.jpg') center center no-repeat;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
     }
     .overlay {
       background: rgba(255, 255, 255, 0.85);
@@ -84,20 +84,16 @@ if ($user_id) {
     <p class="tagline">Empowering EventHorizon Pty Ltd. to seamlessly plan, organize, and track all your events in one place.</p>
 
     <?php if ($role === 'organizer' || $role === 'attendee'): ?>
-  <p class="mt-4">Welcome back, <strong><?= htmlspecialchars($name) ?></strong>!</p>
-  <div class="mt-4">
-    <?php if ($role === 'organizer'): ?>
-      <a href="admin_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
-    <?php elseif ($role === 'attendee'): ?>
-      <a href="index_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
-    <?php endif; ?>
-    <a href="logout.php" class="btn btn-outline-primary btn-lg">Logout</a>
-  </div>
-<?php else: ?>
-  <!-- fallback if no valid role -->
-  <p class="text-danger">Invalid role detected. Please <a href="logout.php">login again</a>.</p>
-<?php endif; ?>
-
+      <p class="mt-4">Welcome back, <strong><?= htmlspecialchars($name) ?></strong>!</p>
+      <div class="mt-4">
+        <?php if ($role === 'organizer'): ?>
+          <a href="admin_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
+        <?php elseif ($role === 'attendee'): ?>
+          <a href="index_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
+        <?php endif; ?>
+        <a href="logout.php" class="btn btn-outline-primary btn-lg">Logout</a>
+      </div>
+    <?php else: ?>
       <div class="mt-5">
         <a href="login.php" class="btn btn-custom btn-lg me-3">Login</a>
         <a href="register_user.php" class="btn btn-outline-primary btn-lg">Sign up</a>
