@@ -41,13 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $updateSql = "UPDATE users SET name = ?, contact = ? WHERE id = ?";
     sqlsrv_query($conn, $updateSql, array($name, $contact, $attendee_id));
 
-    // Check duplicate registration
-    $checkSql = "SELECT * FROM registrations WHERE attendee_id = ? AND event_id = ?";
-    $checkStmt = sqlsrv_query($conn, $checkSql, array($attendee_id, $event_id));
+    // Check if user already registered for any event
+    $checkSql = "SELECT * FROM registrations WHERE attendee_id = ?";
+    $checkStmt = sqlsrv_query($conn, $checkSql, array($attendee_id));
 
     if (sqlsrv_fetch_array($checkStmt, SQLSRV_FETCH_ASSOC)) {
         $msg = "<div class='alert alert-warning shadow-sm text-center fs-5'>
-                    ⚠ You are already registered for this event.
+                    ⚠ You have already registered for an event and cannot register for another.
                 </div>";
     } elseif ($ev['capacity'] <= 0) {
         $msg = "<div class='alert alert-danger shadow-sm text-center fs-5'>
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         sqlsrv_query($conn, $decrementSql, array($event_id));
 
         $msg = "<div class='alert alert-success shadow-sm text-center fs-5'>
-                    🎉 <strong> Successfully registered for " . htmlspecialchars($ev['title']) . "</strong>! 🎉
+                    🎉 <strong>Successfully registered for " . htmlspecialchars($ev['title']) . "</strong>! 🎉
                 </div>";
     }
 }
@@ -103,7 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label class="form-label">Contact Number</label>
         <input type="text" name="contact" value="<?= htmlspecialchars($user['contact']) ?>" class="form-control" required>
       </div>
-
       <div class="mb-3">
         <label class="form-label">Choose Your Bank for FPX Payment</label>
         <select name="bank" class="form-select" required>
