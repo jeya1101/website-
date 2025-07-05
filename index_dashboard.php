@@ -18,6 +18,7 @@ if ($user_id) {
 <head>
   <title>Event Management Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
       background: url('index.jpg') no-repeat center center fixed;
@@ -58,9 +59,8 @@ if ($user_id) {
   </nav>
 
   <div class="container">
-
     <?php if ($role === 'attendee'): ?>
-      <div class="text-end mb-3">
+      <div class="text-end mb-3 ms-5">
         <a href="my-events.php" class="btn btn-outline-primary">
           <i class="bi bi-calendar-check"></i> View My Registered Events
         </a>
@@ -103,5 +103,7 @@ if ($user_id) {
     </div>
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
