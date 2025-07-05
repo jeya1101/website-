@@ -119,7 +119,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <button class="btn btn-primary w-100">Confirm Registration</button>
   </form>
 
-  <div class="mt-3"><a href="index_dashboard.php" class="btn btn-link">Back to events</a></div>
+  <div class="mt-3">
+  <a href="index_dashboard.php" class="btn btn-outline-secondary w-100">
+    <i class="bi bi-arrow-left"></i> Back to Events
+  </a>
+</div>
 </div>
 
 </div>
