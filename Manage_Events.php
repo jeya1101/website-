@@ -29,22 +29,22 @@ if ($stmt === false) {
     }
     .sidebar {
       height: 100vh;
-      width: 220px;
+      width: 240px;
       position: fixed;
-      top: 0;
-      left: 0;
       background: #343a40;
       color: #fff;
-      padding-top: 1rem;
+      padding-top: 2rem;
     }
     .sidebar a {
-      color: #fff;
+      color: #ddd;
       display: block;
-      padding: 0.75rem 1rem;
+      padding: 12px 20px;
+      translation: background 0.3s;
       text-decoration: none;
     }
     .sidebar a:hover {
       background: #495057;
+      color: #fff;
     }
     .content {
       margin-left: 240px;
