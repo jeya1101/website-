@@ -86,7 +86,7 @@ if ($user_id) {
     <?php if ($role === 'organizer' || $role === 'attendee'): ?>
       <p class="mt-4">Welcome back, <strong><?= htmlspecialchars($name) ?></strong>!</p>
       <div class="mt-4">
-        <a href="index_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
+        <a href="admin_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
         <a href="logout.php" class="btn btn-outline-primary btn-lg">Logout</a>
       </div>
     <?php else: ?>
