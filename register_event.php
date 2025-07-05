@@ -88,6 +88,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?= $msg ?>
 
   <div class="card p-4 shadow-sm mt-3">
+      <div class="mb-3">
+    <a href="index_dashboard.php" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Back to Events
+    </a>
+  </div>
   <h3>Register for <?= htmlspecialchars($ev['title']) ?></h3>
   <p><strong>Date:</strong> <?= $ev['event_date']->format('Y-m-d H:i') ?></p>
   <p><strong>Location:</strong> <?= htmlspecialchars($ev['location']) ?></p>
@@ -119,11 +124,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <button class="btn btn-primary w-100">Confirm Registration</button>
   </form>
 
-  <div class="mt-3">
-  <a href="index_dashboard.php" class="btn btn-outline-secondary w-100">
-    <i class="bi bi-arrow-left"></i> Back to Events
-  </a>
-</div>
 </div>
 
 </div>
