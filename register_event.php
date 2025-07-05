@@ -115,17 +115,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <option value="Bank Islam">Bank Islam</option>
         </select>
       </div>
-
-      <!-- Show bank logos below -->
-      <div class="bank-logos text-center mb-3">
-        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/2/25/Public_Bank_Logo.svg/120px-Public_Bank_Logo.svg.png" alt="Public Bank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/CIMB_Group_logo.svg/120px-CIMB_Group_logo.svg.png" alt="CIMB">
-        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/6f/Maybank_logo.svg/120px-Maybank_logo.svg.png" alt="Maybank">
-        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a3/RHB_Bank_Logo.svg/120px-RHB_Bank_Logo.svg.png" alt="RHB">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/AmBank_logo.svg/120px-AmBank_logo.svg.png" alt="AmBank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Bank_Islam_logo.svg/120px-Bank_Islam_logo.svg.png" alt="Bank Islam">
-      </div>
-
       <button class="btn btn-primary w-100">Confirm Registration</button>
     </form>
 
