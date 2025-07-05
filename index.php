@@ -45,7 +45,7 @@ if ($user_id) {
       box-shadow: 0 8px 30px rgba(0,0,0,0.2);
     }
     h1 {
-      font-size: 3rem;
+      font-size: 2rem;
       font-weight: 700;
       color: #2c3e50;
       text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
