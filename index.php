@@ -52,12 +52,17 @@ $user_id = $_SESSION['user_id'] ?? null;
       color: #007bff;
       transition: all 0.3s ease;
     }
+    .btn-outline-primary {
+      background: transparent;
+      border: 2px solid #007bff;
+      color: #007bff;
+      transition: all 0.3s ease;
+    }
     .btn-custom:hover {
       background: #007bff;
       color: #fff;
     }
     .btn-outline-primary:hover {
-      border: 2px solid #007bff;
       background: #007bff;
       color: #fff;
     }
