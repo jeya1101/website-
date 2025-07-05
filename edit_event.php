@@ -6,10 +6,10 @@ if ($_SESSION['role'] !== 'organizer') {
 
 include('db.php');
 
+// Check ID
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die('Invalid event ID.');
 }
-
 $id = (int)$_GET['id'];
 
 // Fetch event details
@@ -20,15 +20,43 @@ $stmt = sqlsrv_query($conn, $sql, $params);
 if ($stmt === false) {
     die(print_r(sqlsrv_errors(), true));
 }
-
 $e = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
 if (!$e) {
     die('Event not found.');
 }
 
-// Prepare datetime-local format (Y-m-d\TH:i)
+// Prepare datetime-local format
 $eventDateTime = $e['event_date']->format('Y-m-d\TH:i');
+
+$msg = "";
+
+// Handle update
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = $_POST['name'];
+    $date = $_POST['date'];
+    $location = $_POST['location'];
+    $capacity = (int)$_POST['capacity'];
+    $fee = (float)$_POST['fee'];
+
+    // Convert to SQL DATETIME
+    $dateTimeFormatted = date('Y-m-d H:i:s', strtotime($date));
+
+    $updateSql = "UPDATE events SET title = ?, event_date = ?, location = ?, capacity = ?, fee = ? WHERE id = ?";
+    $updateParams = array($name, $dateTimeFormatted, $location, $capacity, $fee, $id);
+    $updateStmt = sqlsrv_query($conn, $updateSql, $updateParams);
+
+    if ($updateStmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    // Fetch updated details
+    $stmt = sqlsrv_query($conn, $sql, $params);
+    $e = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+    $eventDateTime = $e['event_date']->format('Y-m-d\TH:i');
+
+    $msg = "<div class='alert alert-success text-center'>✅ Event updated successfully.</div>";
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -40,9 +68,10 @@ $eventDateTime = $e['event_date']->format('Y-m-d\TH:i');
 <div class="container mt-5">
   <div class="card p-4 shadow mx-auto" style="max-width:600px;">
     <h3 class="mb-4 text-center">Edit Event</h3>
-    <form action="update_event.php" method="POST">
-      <input type="hidden" name="id" value="<?= $e['id'] ?>">
 
+    <?= $msg ?>
+
+    <form method="POST">
       <div class="mb-3">
         <label class="form-label">Event Name</label>
         <input type="text" name="name" value="<?= htmlspecialchars($e['title']) ?>" class="form-control" required>
