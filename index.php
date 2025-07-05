@@ -84,12 +84,20 @@ if ($user_id) {
     <p class="tagline">Empowering EventHorizon Pty Ltd. to seamlessly plan, organize, and track all your events in one place.</p>
 
     <?php if ($role === 'organizer' || $role === 'attendee'): ?>
-      <p class="mt-4">Welcome back, <strong><?= htmlspecialchars($name) ?></strong>!</p>
-      <div class="mt-4">
-        <a href="admin_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
-        <a href="logout.php" class="btn btn-outline-primary btn-lg">Logout</a>
-      </div>
-    <?php else: ?>
+  <p class="mt-4">Welcome back, <strong><?= htmlspecialchars($name) ?></strong>!</p>
+  <div class="mt-4">
+    <?php if ($role === 'organizer'): ?>
+      <a href="admin_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
+    <?php elseif ($role === 'attendee'): ?>
+      <a href="index_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
+    <?php endif; ?>
+    <a href="logout.php" class="btn btn-outline-primary btn-lg">Logout</a>
+  </div>
+<?php else: ?>
+  <!-- fallback if no valid role -->
+  <p class="text-danger">Invalid role detected. Please <a href="logout.php">login again</a>.</p>
+<?php endif; ?>
+
       <div class="mt-5">
         <a href="login.php" class="btn btn-custom btn-lg me-3">Login</a>
         <a href="register_user.php" class="btn btn-outline-primary btn-lg">Sign up</a>
