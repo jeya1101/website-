@@ -34,10 +34,6 @@ if ($user_id) {
       font-weight: bold;
       font-size: 1.5rem;
     }
-    .btn-custom:hover {
-      background-color: #007bff;
-      color: #fff;
-    }
   </style>
 </head>
 <body>
@@ -46,7 +42,12 @@ if ($user_id) {
   <nav class="navbar navbar-expand-lg navbar-light mb-4">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">EventHorizon Dashboard</a>
-      <div>
+      <div class="d-flex align-items-center">
+        <?php if ($role === 'attendee'): ?>
+          <a href="my-events.php" class="btn btn-outline-primary btn-sm me-3">
+            <i class="bi bi-calendar-check"></i> My Registered Events
+          </a>
+        <?php endif; ?>
         <?php if ($role): ?>
           <span class="me-3">Welcome, <?= htmlspecialchars($name) ?></span>
           <a href="logout.php" class="btn btn-outline-secondary btn-sm">Logout</a>
@@ -59,14 +60,6 @@ if ($user_id) {
   </nav>
 
   <div class="container">
-    <?php if ($role === 'attendee'): ?>
-      <div class="text-end mb-3 ms-5">
-        <a href="my-events.php" class="btn btn-outline-primary">
-          <i class="bi bi-calendar-check"></i> View My Registered Events
-        </a>
-      </div>
-    <?php endif; ?>
-
     <h1 class="mb-4 text-center">Upcoming Events</h1>
     <p class="text-center mb-5">Discover, join, and manage events all in one place.</p>
 
