@@ -59,10 +59,12 @@ if ($stmt === false) {
 <body>
 
 <div class="sidebar">
-  <h4 class="text-center mb-4">Admin Dashboard</h4>
-  <a href="dashboard.php"><i class="bi bi-speedometer2"></i> Dashboard</a>
-  <a href="Manage_Events.php"><i class="bi bi-calendar-event"></i> Manage Events</a>
-  <a href="logout.php"><i class="bi bi-box-arrow-right"></i> Logout</a>
+  <h4 class="text-center mb-4"><i class="bi bi-speedometer2 me-2"></i> Admin Panel</h4>
+  <a href="admin_dashboard.php"><i class="bi bi-house me-2"></i> Dashboard</a>
+  <a href="Manage_Events.php"><i class="bi bi-calendar-event me-2"></i> Manage Event</a>
+  <a href="#"><i class="bi bi-people me-2"></i>Manage Attendees</a>
+  <a href="#"><i class="bi bi-chat-dots me-2"></i>Manage Chat</a>
+  <a href="logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
 </div>
 
 <div class="content">
