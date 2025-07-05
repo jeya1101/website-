@@ -43,18 +43,21 @@ if ($user_id) {
    <div class="container-fluid">
     <a class="navbar-brand" href="#">EventHorizon Dashboard</a>
     <div class="text-end">
-      <?php if ($role): ?>
-        <div class="mb-1">Welcome, <?= htmlspecialchars($name) ?></div>
-        <?php if ($role === 'attendee'): ?>
-          <a href="my-events.php" class="btn btn-outline-primary btn-sm me-2">
-            <i class="bi bi-calendar-check"></i> My Registered Events
-          </a>
-        <?php endif; ?>
-        <a href="logout.php" class="btn btn-outline-secondary btn-sm">Logout</a>
-      <?php else: ?>
-        <a href="login.php" class="btn btn-outline-primary btn-sm me-2">Login</a>
-        <a href="register_user.php" class="btn btn-primary btn-sm">Sign Up</a>
-      <?php endif; ?>
+       <?php if ($role): ?>
+    <div class="alert alert-success py-1 px-3 mb-2 d-inline-block">
+      Welcome, <?= htmlspecialchars($name) ?>
+    </div>
+    <br>
+    <?php if ($role === 'attendee'): ?>
+      <a href="my-events.php" class="btn btn-outline-primary btn-sm me-2">
+        <i class="bi bi-calendar-check"></i> My Registered Events
+      </a>
+    <?php endif; ?>
+    <a href="logout.php" class="btn btn-outline-secondary btn-sm">Logout</a>
+  <?php else: ?>
+    <a href="login.php" class="btn btn-outline-primary btn-sm me-2">Login</a>
+    <a href="register_user.php" class="btn btn-primary btn-sm">Sign Up</a>
+  <?php endif; ?>
     </div>
   </div>
   </nav>
