@@ -67,7 +67,7 @@ $user_id = $_SESSION['user_id'] ?? null;
 <body>
   <div class="overlay">
     <h1>Event Management Portal</h1>
-    <p class="tagline">Plan, organize, and register for amazing events effortlessly. Explore conferences, workshops, and more — all in one place.</p>
+    <p class="tagline">Empowering EventHorizon Pty Ltd. to seamlessly plan, organize, and track all your events in one place.</p>
 
     <?php if ($role === 'organizer' || $role === 'attendee'): ?>
       <p class="mt-4">Welcome back, <?= htmlspecialchars($role) ?>!</p>
