@@ -27,9 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Hash password
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // Insert user
-        $insertSql = "INSERT INTO users (name, username, password, role) VALUES (?, ?, ?, ?)";
-        $insertParams = array($name, $username, $hashedPassword, $role);
+        // ✅ Insert user with contact
+        $insertSql = "INSERT INTO users (name, contact, username, password, role) VALUES (?, ?, ?, ?, ?)";
+        $insertParams = array($name, $contact, $username, $hashedPassword, $role);
         $insertStmt = sqlsrv_query($conn, $insertSql, $insertParams);
 
         if ($insertStmt === false) {
