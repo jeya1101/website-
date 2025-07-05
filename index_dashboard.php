@@ -4,6 +4,14 @@ include('db.php');
 
 $role = $_SESSION['role'] ?? null;
 $user_id = $_SESSION['user_id'] ?? null;
+$name = '';
+
+if ($user_id) {
+    $userSql = "SELECT name FROM users WHERE id = ?";
+    $userStmt = sqlsrv_query($conn, $userSql, array($user_id));
+    $userData = sqlsrv_fetch_array($userStmt, SQLSRV_FETCH_ASSOC);
+    $name = $userData ? $userData['name'] : '';
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -39,7 +47,7 @@ $user_id = $_SESSION['user_id'] ?? null;
       <a class="navbar-brand" href="#">EventHorizon Dashboard</a>
       <div>
         <?php if ($role): ?>
-          <span class="me-3">Welcome, <?= htmlspecialchars($role) ?></span>
+          <span class="me-3">Welcome, <?= htmlspecialchars($name) ?></span>
           <a href="logout.php" class="btn btn-outline-secondary btn-sm">Logout</a>
         <?php else: ?>
           <a href="login.php" class="btn btn-outline-primary btn-sm me-2">Login</a>
@@ -53,7 +61,7 @@ $user_id = $_SESSION['user_id'] ?? null;
     <h1 class="mb-4 text-center">Upcoming Events</h1>
     <p class="text-center mb-5">Discover, join, and manage events all in one place.</p>
 
-    <div class="row">
+    <div class="row justify-content-center">
     <?php
       $sql = "SELECT * FROM events ORDER BY event_date";
       $stmt = sqlsrv_query($conn, $sql);
