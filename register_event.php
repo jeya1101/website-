@@ -88,39 +88,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?= $msg ?>
 
   <div class="card p-4 shadow-sm mt-3">
-    <h3>Register for <?= htmlspecialchars($ev['title']) ?></h3>
-    <p><strong>Date:</strong> <?= $ev['event_date']->format('Y-m-d H:i') ?></p>
-    <p><strong>Location:</strong> <?= htmlspecialchars($ev['location']) ?></p>
-    <p><strong>Remaining Capacity:</strong> <?= htmlspecialchars($ev['capacity']) ?></p>
-    <p><strong>Description:</strong> <?= nl2br(htmlspecialchars($ev['description'])) ?></p>
+  <h3>Register for <?= htmlspecialchars($ev['title']) ?></h3>
+  <p><strong>Date:</strong> <?= $ev['event_date']->format('Y-m-d H:i') ?></p>
+  <p><strong>Location:</strong> <?= htmlspecialchars($ev['location']) ?></p>
+  <p><strong>Remaining Capacity:</strong> <?= htmlspecialchars($ev['capacity']) ?></p>
+  <p><strong>Fee:</strong> RM <?= number_format($ev['fee'], 2) ?></p>
+  <p><strong>Description:</strong> <?= nl2br(htmlspecialchars($ev['description'])) ?></p>
 
-    <form method="post" class="mt-4">
-      <div class="mb-3">
-        <label class="form-label">Your Name</label>
-        <input type="text" name="name" value="<?= htmlspecialchars($user['name']) ?>" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Contact Number</label>
-        <input type="text" name="contact" value="<?= htmlspecialchars($user['contact']) ?>" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Choose Your Bank for FPX Payment</label>
-        <select name="bank" class="form-select" required>
-          <option value="" disabled selected>-- Select Bank --</option>
-          <option value="Public Bank">Public Bank</option>
-          <option value="CIMB Bank">CIMB Bank</option>
-          <option value="Maybank">Maybank</option>
-          <option value="RHB Bank">RHB Bank</option>
-          <option value="AmBank">AmBank</option>
-          <option value="Bank Islam">Bank Islam</option>
-        </select>
-      </div>
+  <form method="post" class="mt-4">
+    <div class="mb-3">
+      <label class="form-label">Your Name</label>
+      <input type="text" name="name" value="<?= htmlspecialchars($user['name']) ?>" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Contact Number</label>
+      <input type="text" name="contact" value="<?= htmlspecialchars($user['contact']) ?>" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Choose Your Bank for FPX Payment</label>
+      <select name="bank" class="form-select" required>
+        <option value="" disabled selected>-- Select Bank --</option>
+        <option value="Public Bank">Public Bank</option>
+        <option value="CIMB Bank">CIMB Bank</option>
+        <option value="Maybank">Maybank</option>
+        <option value="RHB Bank">RHB Bank</option>
+        <option value="AmBank">AmBank</option>
+        <option value="Bank Islam">Bank Islam</option>
+      </select>
+    </div>
+    <button class="btn btn-primary w-100">Confirm Registration</button>
+  </form>
 
-      <button class="btn btn-primary w-100">Confirm Registration</button>
-    </form>
+  <div class="mt-3"><a href="index_dashboard.php" class="btn btn-link">Back to events</a></div>
+</div>
 
-    <div class="mt-3"><a href="index_dashboard.php" class="btn btn-link">Back to events</a></div>
-  </div>
 </div>
 
 </body>
