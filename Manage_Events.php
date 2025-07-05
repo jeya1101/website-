@@ -39,7 +39,7 @@ if ($stmt === false) {
       color: #ddd;
       display: block;
       padding: 12px 20px;
-      translation: background 0.3s;
+      transition: background 0.3s;
       text-decoration: none;
     }
     .sidebar a:hover {
@@ -83,6 +83,7 @@ if ($stmt === false) {
         <th>Date & Time</th>
         <th>Location</th>
         <th>Capacity</th>
+        <th>Fee (RM)</th> <!-- NEW -->
         <th>Actions</th>
       </tr>
     </thead>
@@ -94,11 +95,12 @@ if ($stmt === false) {
         <td><?= $row['event_date']->format('Y-m-d H:i') ?></td>
         <td><?= htmlspecialchars($row['location']) ?></td>
         <td><?= htmlspecialchars($row['capacity']) ?></td>
+        <td><?= 'RM ' . number_format($row['fee'], 2) ?></td> <!-- NEW -->
         <td>
           <a href="edit_event.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning">
             <i class="bi bi-pencil"></i> Update
           </a>
-          <a href="delete_event.php?id=<?= $row['id'] ?>" 
+          <a href="delete_event.php?id=<?= $row['id'] ?>"
              onclick="return confirm('Are you sure to delete this event?');"
              class="btn btn-sm btn-danger">
             <i class="bi bi-trash"></i> Delete
