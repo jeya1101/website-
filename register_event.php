@@ -17,7 +17,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $event_id = (int)$_GET['id'];
 
-// Fetch attendee existing info
+// Fetch attendee info
 $userSql = "SELECT * FROM users WHERE id = ?";
 $userParams = array($attendee_id);
 $userStmt = sqlsrv_query($conn, $userSql, $userParams);
@@ -33,16 +33,17 @@ if (!$ev) {
     die("<p>Event not found. <a href='index.php'>Go back</a></p>");
 }
 
-// Handle form submission
+// Handle submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $contact = $_POST['contact'];
+    $selected_bank = $_POST['bank'];
 
-    // Update user's profile in users table
+    // Update profile
     $updateSql = "UPDATE users SET name = ?, contact = ? WHERE id = ?";
     sqlsrv_query($conn, $updateSql, array($name, $contact, $attendee_id));
 
-    // Check if already registered
+    // Check duplicate registration
     $checkSql = "SELECT * FROM registrations WHERE attendee_id = ? AND event_id = ?";
     $checkStmt = sqlsrv_query($conn, $checkSql, array($attendee_id, $event_id));
 
@@ -51,14 +52,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ⚠ You are already registered for this event.
                 </div>";
     } else {
-        // ✅ Insert registration snapshot
-        $insertSql = "INSERT INTO registrations (attendee_id, attendee_name, contact, event_id) VALUES (?, ?, ?, ?)";
-        sqlsrv_query($conn, $insertSql, array($attendee_id, $name, $contact, $event_id));
+        // Insert registration (storing bank as contact snapshot if needed, you can create a column later)
+        $insertSql = "INSERT INTO registrations (attendee_id, attendee_name, contact, event_id, selected_bank) VALUES (?, ?, ?, ?, ?)";
+        sqlsrv_query($conn, $insertSql, array($attendee_id, $name, $contact, $event_id, $selected_bank));
 
         $msg = "<div class='alert alert-success shadow-sm text-center fs-5'>
-    🎉 <strong>Successfully registered " . htmlspecialchars($ev['title']) . "</strong>! 🎉
-    <br>Thank you for signing up. We'll keep you updated.
-</div>";
+                    🎉 Successfully registered <strong>$name ($contact)</strong> for <strong>" . htmlspecialchars($ev['title']) . "</strong>!
+                    <br>Selected bank: <strong>$selected_bank</strong>
+                    <br>Thank you for signing up. We'll keep you updated.
+                </div>";
     }
 }
 ?>
@@ -71,6 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     body { background: #f8f9fa; }
     .alert { margin-top: 1.5rem; }
     .card { margin-top: 1.5rem; }
+    .bank-logos img {
+      height: 40px;
+      margin: 5px 10px;
+    }
   </style>
 </head>
 <body>
@@ -78,7 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container">
   <h1 class="text-center mt-4">Event Registration</h1>
 
-  <!-- Success or warning message outside card -->
   <?= $msg ?>
 
   <div class="card p-4 shadow-sm mt-3">
@@ -97,18 +102,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label class="form-label">Contact Number</label>
         <input type="text" name="contact" value="<?= htmlspecialchars($user['contact']) ?>" class="form-control" required>
       </div>
-        <div class="mb-3">
-    <label class="form-label">Payment Method</label>
-    <select name="payment_bank" class="form-select" required>
-      <option value="" disabled selected>-- Choose Bank for FPX Payment --</option>
-      <option value="Maybank2u">FPX - Maybank</option>
-      <option value="CIMBClicks">FPX - CIMB</option>
-      <option value="PublicBank">FPX - Public Bank</option>
-      <option value="RHBNow">FPX - RHB</option>
-      <option value="AmOnline">FPX - AmBank</option>
-      <option value="BankIslam">FPX - Bank Islam</option>
-    </select>
-  </div>
+
+      <div class="mb-3">
+        <label class="form-label">Choose Your Bank for FPX Payment</label>
+        <select name="bank" class="form-select" required>
+          <option value="" disabled selected>-- Select Bank --</option>
+          <option value="Public Bank">Public Bank</option>
+          <option value="CIMB Bank">CIMB Bank</option>
+          <option value="Maybank">Maybank</option>
+          <option value="RHB Bank">RHB Bank</option>
+          <option value="AmBank">AmBank</option>
+          <option value="Bank Islam">Bank Islam</option>
+        </select>
+      </div>
+
+      <!-- Show bank logos below -->
+      <div class="bank-logos text-center mb-3">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/2/25/Public_Bank_Logo.svg/120px-Public_Bank_Logo.svg.png" alt="Public Bank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/CIMB_Group_logo.svg/120px-CIMB_Group_logo.svg.png" alt="CIMB">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/6f/Maybank_logo.svg/120px-Maybank_logo.svg.png" alt="Maybank">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a3/RHB_Bank_Logo.svg/120px-RHB_Bank_Logo.svg.png" alt="RHB">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/AmBank_logo.svg/120px-AmBank_logo.svg.png" alt="AmBank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Bank_Islam_logo.svg/120px-Bank_Islam_logo.svg.png" alt="Bank Islam">
+      </div>
+
       <button class="btn btn-primary w-100">Confirm Registration</button>
     </form>
 
