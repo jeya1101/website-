@@ -19,14 +19,12 @@ $event_id = (int)$_GET['id'];
 
 // Fetch attendee info
 $userSql = "SELECT * FROM users WHERE id = ?";
-$userParams = array($attendee_id);
-$userStmt = sqlsrv_query($conn, $userSql, $userParams);
+$userStmt = sqlsrv_query($conn, $userSql, array($attendee_id));
 $user = sqlsrv_fetch_array($userStmt, SQLSRV_FETCH_ASSOC);
 
 // Fetch event details
 $evSql = "SELECT * FROM events WHERE id = ?";
-$evParams = array($event_id);
-$evStmt = sqlsrv_query($conn, $evSql, $evParams);
+$evStmt = sqlsrv_query($conn, $evSql, array($event_id));
 $ev = sqlsrv_fetch_array($evStmt, SQLSRV_FETCH_ASSOC);
 
 if (!$ev) {
@@ -39,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contact = $_POST['contact'];
     $selected_bank = $_POST['bank'];
 
-    // Update profile
+    // Update user profile
     $updateSql = "UPDATE users SET name = ?, contact = ? WHERE id = ?";
     sqlsrv_query($conn, $updateSql, array($name, $contact, $attendee_id));
 
@@ -51,10 +49,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg = "<div class='alert alert-warning shadow-sm text-center fs-5'>
                     ⚠ You are already registered for this event.
                 </div>";
+    } elseif ($ev['capacity'] <= 0) {
+        // Check if event is full
+        $msg = "<div class='alert alert-danger shadow-sm text-center fs-5'>
+                    ❌ Sorry, this event is already fully booked.
+                </div>";
     } else {
-        // Insert registration (storing bank as contact snapshot if needed, you can create a column later)
+        // Insert registration
         $insertSql = "INSERT INTO registrations (attendee_id, attendee_name, contact, event_id, selected_bank) VALUES (?, ?, ?, ?, ?)";
         sqlsrv_query($conn, $insertSql, array($attendee_id, $name, $contact, $event_id, $selected_bank));
+
+        // Reduce capacity by 1
+        $decrementSql = "UPDATE events SET capacity = capacity - 1 WHERE id = ? AND capacity > 0";
+        sqlsrv_query($conn, $decrementSql, array($event_id));
 
         $msg = "<div class='alert alert-success shadow-sm text-center fs-5'>
                     🎉<strong> Successfully registered </strong> <strong>" . htmlspecialchars($ev['title']) . "</strong>!🎉
@@ -89,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h3>Register for <?= htmlspecialchars($ev['title']) ?></h3>
     <p><strong>Date:</strong> <?= $ev['event_date']->format('Y-m-d H:i') ?></p>
     <p><strong>Location:</strong> <?= htmlspecialchars($ev['location']) ?></p>
-    <p><strong>Capacity:</strong> <?= htmlspecialchars($ev['capacity']) ?></p>
+    <p><strong>Remaining Capacity:</strong> <?= htmlspecialchars($ev['capacity']) ?></p>
     <p><strong>Description:</strong> <?= nl2br(htmlspecialchars($ev['description'])) ?></p>
 
     <form method="post" class="mt-4">
@@ -114,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <option value="Bank Islam">Bank Islam</option>
         </select>
       </div>
+
       <button class="btn btn-primary w-100">Confirm Registration</button>
     </form>
 
