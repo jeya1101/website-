@@ -23,11 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg = '<div class="alert alert-danger">Username already exists.</div>';
     } elseif ($password !== $repass) {
         $msg = '<div class="alert alert-danger">Passwords do not match.</div>';
+    } elseif (strlen($password) < 8 || 
+              !preg_match("/[A-Z]/", $password) || 
+              !preg_match("/[0-9]/", $password)) {
+        $msg = '<div class="alert alert-danger">
+                Password must be at least 8 characters long, include an uppercase letter and a number.
+                </div>';
     } else {
         // Hash password
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // ✅ Insert user with contact
+        // Insert user with contact
         $insertSql = "INSERT INTO users (name, contact, username, password, role) VALUES (?, ?, ?, ?, ?)";
         $insertParams = array($name, $contact, $username, $hashedPassword, $role);
         $insertStmt = sqlsrv_query($conn, $insertSql, $insertParams);
@@ -36,7 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             die(print_r(sqlsrv_errors(), true));
         }
 
-        $msg = '<div class="alert alert-success">Registration successful. <a href="login.php">Login here</a></div>';
+        $msg = '<div class="alert alert-success">
+                Registration successful. <a href="login.php">Login here</a>
+                </div>';
     }
 }
 ?>
