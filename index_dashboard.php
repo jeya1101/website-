@@ -58,6 +58,15 @@ if ($user_id) {
   </nav>
 
   <div class="container">
+
+    <?php if ($role === 'attendee'): ?>
+      <div class="text-end mb-3">
+        <a href="my-events.php" class="btn btn-outline-primary">
+          <i class="bi bi-calendar-check"></i> View My Registered Events
+        </a>
+      </div>
+    <?php endif; ?>
+
     <h1 class="mb-4 text-center">Upcoming Events</h1>
     <p class="text-center mb-5">Discover, join, and manage events all in one place.</p>
 
