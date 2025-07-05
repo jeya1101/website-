@@ -56,9 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         sqlsrv_query($conn, $insertSql, array($attendee_id, $name, $contact, $event_id));
 
         $msg = "<div class='alert alert-success shadow-sm text-center fs-5'>
-                    🎉 Successfully registered " . htmlspecialchars($ev['title']) . "</strong>!
-                    <br>Thank you for signing up. We'll keep you updated.
-                </div>";
+    🎉 <strong>Successfully registered " . htmlspecialchars($ev['title']) . "</strong>!
+    <br>Thank you for signing up. We'll keep you updated.
+</div>";
     }
 }
 ?>
