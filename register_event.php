@@ -13,7 +13,7 @@ $msg = "";
 
 // Check event ID
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    die("<p>Invalid event ID. <a href='index.php'>Go back</a></p>");
+    die("<p>Invalid event ID. <a href='index_dashboard.php'>Go back</a></p>");
 }
 $event_id = (int)$_GET['id'];
 
@@ -28,14 +28,14 @@ $evStmt = sqlsrv_query($conn, $evSql, array($event_id));
 $ev = sqlsrv_fetch_array($evStmt, SQLSRV_FETCH_ASSOC);
 
 if (!$ev) {
-    die("<p>Event not found. <a href='index.php'>Go back</a></p>");
+    die("<p>Event not found. <a href='index_dashboard.php'>Go back</a></p>");
 }
 
 // Handle submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $contact = $_POST['contact'];
-    $selected_bank = $_POST['bank'];
+    $bank = $_POST['bank'];
 
     // Update user profile
     $updateSql = "UPDATE users SET name = ?, contact = ? WHERE id = ?";
@@ -50,22 +50,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ⚠ You are already registered for this event.
                 </div>";
     } elseif ($ev['capacity'] <= 0) {
-        // Check if event is full
         $msg = "<div class='alert alert-danger shadow-sm text-center fs-5'>
-                    ❌ Sorry, this event is already fully booked.
+                    ❌ Sorry, this event is fully booked.
                 </div>";
     } else {
-        // Insert registration
-        $insertSql = "INSERT INTO registrations (attendee_id, attendee_name, contact, event_id, selected_bank) VALUES (?, ?, ?, ?, ?)";
-        sqlsrv_query($conn, $insertSql, array($attendee_id, $name, $contact, $event_id, $selected_bank));
+        // Insert registration with bank snapshot
+        $insertSql = "INSERT INTO registrations (attendee_id, attendee_name, contact, event_id, payment_status, bank)
+                      VALUES (?, ?, ?, ?, 'pending', ?)";
+        sqlsrv_query($conn, $insertSql, array($attendee_id, $name, $contact, $event_id, $bank));
 
-        // Reduce capacity by 1
+        // Decrease event capacity
         $decrementSql = "UPDATE events SET capacity = capacity - 1 WHERE id = ? AND capacity > 0";
         sqlsrv_query($conn, $decrementSql, array($event_id));
 
         $msg = "<div class='alert alert-success shadow-sm text-center fs-5'>
-                    🎉<strong> Successfully registered </strong> <strong>" . htmlspecialchars($ev['title']) . "</strong>!🎉
-                    <br>Thank you for signing up. We'll keep you updated.
+                    🎉 <strong> Successfully registered for " . htmlspecialchars($ev['title']) . "</strong>! 🎉
                 </div>";
     }
 }
@@ -79,10 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     body { background: #f8f9fa; }
     .alert { margin-top: 1.5rem; }
     .card { margin-top: 1.5rem; }
-    .bank-logos img {
-      height: 40px;
-      margin: 5px 10px;
-    }
   </style>
 </head>
 <body>
