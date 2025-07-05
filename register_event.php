@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         sqlsrv_query($conn, $insertSql, array($attendee_id, $name, $contact, $event_id));
 
         $msg = "<div class='alert alert-success shadow-sm text-center fs-5'>
-    🎉 <strong>Successfully registered " . htmlspecialchars($ev['title']) . "</strong>!
+    🎉 <strong>Successfully registered " . htmlspecialchars($ev['title']) . "</strong>! 🎉
     <br>Thank you for signing up. We'll keep you updated.
 </div>";
     }
@@ -97,6 +97,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label class="form-label">Contact Number</label>
         <input type="text" name="contact" value="<?= htmlspecialchars($user['contact']) ?>" class="form-control" required>
       </div>
+        <div class="mb-3">
+    <label class="form-label">Payment Method</label>
+    <select name="payment_bank" class="form-select" required>
+      <option value="" disabled selected>-- Choose Bank for FPX Payment --</option>
+      <option value="Maybank2u">FPX - Maybank</option>
+      <option value="CIMBClicks">FPX - CIMB</option>
+      <option value="PublicBank">FPX - Public Bank</option>
+      <option value="RHBNow">FPX - RHB</option>
+      <option value="AmOnline">FPX - AmBank</option>
+      <option value="BankIslam">FPX - Bank Islam</option>
+    </select>
+  </div>
       <button class="btn btn-primary w-100">Confirm Registration</button>
     </form>
 
