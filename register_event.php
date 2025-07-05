@@ -38,9 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $contact = $_POST['contact'];
 
+    // Update user details
     $updateSql = "UPDATE users SET name = ?, contact = ? WHERE id = ?";
     sqlsrv_query($conn, $updateSql, array($name, $contact, $attendee_id));
 
+    // Check existing registration
     $checkSql = "SELECT * FROM registrations WHERE attendee_id = ? AND event_id = ?";
     $checkStmt = sqlsrv_query($conn, $checkSql, array($attendee_id, $event_id));
 
@@ -49,16 +51,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ⚠ You are already registered for this event.
                 </div>";
     } else {
+        // Insert registration
         $insertSql = "INSERT INTO registrations (attendee_id, event_id) VALUES (?, ?)";
         sqlsrv_query($conn, $insertSql, array($attendee_id, $event_id));
 
         $msg = "<div class='alert alert-success shadow-sm text-center fs-5'>
-                    🎉 Successfully registered for <strong>" . htmlspecialchars($ev['title']) . "</strong>!
+                    🎉 Successfully registered <strong>$name ($contact)</strong> for <strong>" . htmlspecialchars($ev['title']) . "</strong>!
                     <br>Thank you for signing up. We'll keep you updated.
                 </div>";
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -67,19 +69,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body { background: #f8f9fa; }
-    .alert { margin-top: 2rem; }
-    .card { margin-top: 1rem; }
+    .alert { margin-top: 1.5rem; }
+    .card { margin-top: 1.5rem; }
   </style>
 </head>
 <body>
 
 <div class="container">
   <h1 class="text-center mt-4">Event Registration</h1>
-  
-  <!-- Success or warning message outside container -->
+
+  <!-- Success or warning message displayed outside the container -->
   <?= $msg ?>
 
-  <div class="card p-4 shadow-sm mt-4">
+  <div class="card p-4 shadow-sm mt-3">
     <h3>Register for <?= htmlspecialchars($ev['title']) ?></h3>
     <p><strong>Date:</strong> <?= $ev['event_date']->format('Y-m-d H:i') ?></p>
     <p><strong>Location:</strong> <?= htmlspecialchars($ev['location']) ?></p>
