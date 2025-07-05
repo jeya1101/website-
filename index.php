@@ -4,6 +4,15 @@ include('db.php');
 
 $role = $_SESSION['role'] ?? null;
 $user_id = $_SESSION['user_id'] ?? null;
+$name = '';
+
+if ($user_id) {
+    $stmt = sqlsrv_query($conn, "SELECT name FROM users WHERE id = ?", array($user_id));
+    if ($stmt !== false) {
+        $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+        if ($row) $name = $row['name'];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,10 +67,7 @@ $user_id = $_SESSION['user_id'] ?? null;
       color: #007bff;
       transition: all 0.3s ease;
     }
-    .btn-custom:hover {
-      background: #007bff;
-      color: #fff;
-    }
+    .btn-custom:hover,
     .btn-outline-primary:hover {
       background: #007bff;
       color: #fff;
@@ -74,11 +80,11 @@ $user_id = $_SESSION['user_id'] ?? null;
 </head>
 <body>
   <div class="overlay">
-    <h1>Event Management Portal</h1>
+    <h1>EVENT MANAGEMENT PORTAL</h1>
     <p class="tagline">Empowering EventHorizon Pty Ltd. to seamlessly plan, organize, and track all your events in one place.</p>
 
     <?php if ($role === 'organizer' || $role === 'attendee'): ?>
-      <p class="mt-4">Welcome back, <?= htmlspecialchars($role) ?>!</p>
+      <p class="mt-4">Welcome back, <strong><?= htmlspecialchars($name) ?></strong>!</p>
       <div class="mt-4">
         <a href="index_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
         <a href="logout.php" class="btn btn-outline-primary btn-lg">Logout</a>
