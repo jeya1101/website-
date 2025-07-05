@@ -40,14 +40,15 @@ if ($user_id) {
 <div class="overlay">
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light mb-4">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">EventHorizon Dashboard</a>
-      <div class="d-flex align-items-center">
-        <?php if ($role === 'attendee'): ?>
-          <a href="my-events.php" class="btn btn-outline-primary btn-sm me-3">
-            <i class="bi bi-calendar-check"></i> My Registered Events
-          </a>
-        <?php endif; ?>
+   <div class="container-fluid">
+    <a class="navbar-brand" href="#">EventHorizon Dashboard</a>
+    <div class="d-flex flex-column align-items-end">
+      <?php if ($role === 'attendee'): ?>
+        <a href="my-events.php" class="btn btn-outline-primary btn-sm mb-2">
+          <i class="bi bi-calendar-check"></i> My Registered Events
+        </a>
+      <?php endif; ?>
+      <div>
         <?php if ($role): ?>
           <span class="me-3">Welcome, <?= htmlspecialchars($name) ?></span>
           <a href="logout.php" class="btn btn-outline-secondary btn-sm">Logout</a>
@@ -57,6 +58,7 @@ if ($user_id) {
         <?php endif; ?>
       </div>
     </div>
+  </div>
   </nav>
 
   <div class="container">
