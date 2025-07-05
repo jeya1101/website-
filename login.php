@@ -9,23 +9,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
     $role     = $_POST['role'];
 
-    // Prepare and execute parameterized query
-    $sql = "SELECT * FROM users WHERE username = ? AND password = ? AND role = ?";
-    $params = array($username, $password, $role);
+    // Fetch user by username & role
+    $sql = "SELECT * FROM users WHERE username = ? AND role = ?";
+    $params = array($username, $role);
     $stmt = sqlsrv_query($conn, $sql, $params);
 
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     }
 
-    // Fetch user
     if ($user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['role'] = $user['role'];
-        header('Location: index.php');
-        exit;
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['role'] = $user['role'];
+            header('Location: index.php');
+            exit;
+        } else {
+            $msg = '<div class="alert alert-danger">Invalid password.</div>';
+        }
     } else {
-        $msg = '<div class="alert alert-danger">Invalid login credentials.</div>';
+        $msg = '<div class="alert alert-danger">Invalid username or role.</div>';
     }
 }
 ?>
