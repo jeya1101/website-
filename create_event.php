@@ -14,15 +14,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $capacity = $_POST['capacity'];
     $fee = $_POST['fee'];
 
+    // Convert date to standard format
+    $dateTimeFormatted = date('Y-m-d H:i:s', strtotime($date));
+
     $sql = "INSERT INTO events (title, event_date, location, capacity, fee) VALUES (?, ?, ?, ?, ?)";
-    $params = array($name, $date, $location, $capacity, $fee);
+    $params = array($name, $dateTimeFormatted, $location, $capacity, $fee);
     $stmt = sqlsrv_query($conn, $sql, $params);
 
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     }
 
-    header('Location: Manage_Events.php'); // redirect back to manage events page
+    header('Location: Manage_Events.php');
     exit;
 }
 ?>
@@ -31,10 +34,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <title>Create Event</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 
-<div class="container mt-5">
+<div class="container mt-4">
+  <!-- Back button -->
+  <a href="Manage_Events.php" class="btn btn-outline-primary mb-4 shadow-sm">
+    <i class="bi bi-arrow-left"></i> Back to Manage Events
+  </a>
+
   <div class="card shadow p-4 mx-auto" style="max-width:600px;">
     <h3 class="mb-4 text-center">Create New Event</h3>
     <form method="POST">
