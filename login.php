@@ -33,13 +33,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Login</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- ✅ Bootstrap Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-<div class="container d-flex justify-content-center align-items-center vh-100">
+<div class="container d-flex flex-column justify-content-center align-items-center vh-100">
   <div class="card p-4 shadow" style="width: 22rem;">
     <h3 class="card-title mb-3 text-center">Sign In</h3>
     <?= $msg ?>
@@ -64,7 +68,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
     <p class="mt-3 text-center">No account? <a href="register_user.php">Sign up</a></p>
   </div>
+
+  <!-- ✅ Back to index with arrow -->
+  <div class="mt-4 text-center">
+    <a href="index.php" class="btn btn-outline-primary">
+      <i class="bi bi-arrow-left"></i> Back to Home
+    </a>
+  </div>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
