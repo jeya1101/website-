@@ -156,13 +156,6 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
         <td><?= $event['event_date']->format('Y-m-d H:i') ?></td>
         <td><?= htmlspecialchars($event['location']) ?></td>
         <td><?= htmlspecialchars($event['capacity']) ?></td>
-        <td>
-          <a href="edit_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> Edit</a>
-          <a href="view_attendees.php?event_id=<?= $event['id'] ?>" class="btn btn-sm btn-info"><i class="bi bi-eye"></i> Attendees</a>
-          <a href="delete_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this event?')">
-            <i class="bi bi-trash"></i> Delete
-          </a>
-        </td>
       </tr>
     <?php } ?>
     </tbody>
