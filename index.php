@@ -70,12 +70,13 @@ if ($stmt !== false) {
       color: #fff;
     }
     .events-section {
-      background: rgba(255,255,255,0.9);
-      padding: 2rem;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 3rem;
       border-radius: 15px;
       max-width: 900px;
       margin: 3rem auto;
-      box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+      animation: fadeIn 1.5s ease;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
     }
     .event-card {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
