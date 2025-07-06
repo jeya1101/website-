@@ -6,10 +6,12 @@ if ($_SESSION['role'] !== 'organizer') {
 
 include('db.php');
 
+$msg = ""; // initialize
+
 // Insert only if POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
-    $description = $_POST['description']; // NEW
+    $description = $_POST['description'];
     $date = $_POST['date'];
     $location = $_POST['location'];
     $capacity = $_POST['capacity'];
@@ -26,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die(print_r(sqlsrv_errors(), true));
     }
 
-  $msg = "<div class='alert alert-success text-center'>✅ Successfully created!</div>";
+    $msg = "<div class='alert alert-success text-center'>✅ Successfully created!</div>";
 }
 ?>
 <!DOCTYPE html>
@@ -45,6 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <div class="card shadow p-4 mx-auto" style="max-width:600px;">
     <h3 class="mb-4 text-center">Create New Event</h3>
+
+    <?= $msg ?? "" ?> <!-- ✅ This will display your success message -->
+
     <form method="POST">
       <div class="mb-3">
         <label class="form-label">Event Name</label>
