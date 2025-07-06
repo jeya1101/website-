@@ -86,34 +86,16 @@ if ($stmt !== false) {
     font-weight: 600;
     color: #2c3e50;
   }
-
-  /* BEAUTIFUL GLASS + GRADIENT BORDER */
   .event-card {
-    position: relative;
     border: none;
-    border-radius: 15px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .event-card::before {
-    content: "";
-    position: absolute;
-    top: -2px; left: -2px; right: -2px; bottom: -2px;
-    z-index: -1;
-    background: linear-gradient(135deg, #3498db, #8e44ad, #3498db);
-    border-radius: 17px;
-    background-size: 400% 400%;
-    animation: gradientAnimation 6s ease infinite;
   }
   .event-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 12px 35px rgba(0,0,0,0.15);
   }
-
   .event-card .card-title {
     font-size: 1.2rem;
     font-weight: 600;
@@ -122,12 +104,6 @@ if ($stmt !== false) {
   .event-card .card-text {
     font-size: 0.95rem;
     color: #555;
-  }
-
-  @keyframes gradientAnimation {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
   }
   @keyframes fadeIn {
     from {opacity:0; transform: translateY(-20px);}
