@@ -32,6 +32,8 @@ if ($stmt !== false) {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
   body {
+    background: url('index.jpg') center center no-repeat;
+    background-size: cover;
     background: linear-gradient(135deg, #e0eafc, #cfdef3);
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -147,9 +149,11 @@ if ($stmt !== false) {
         <div class="col-md-4">
           <div class="card event-card h-100">
             <div class="card-body">
+                <center>
               <h5 class="card-title"><?= htmlspecialchars($event['title']) ?></h5>
               <p class="card-text"><?= htmlspecialchars($event['description']) ?></p>
               <p class="card-text"><small class="text-muted"><?= htmlspecialchars($event['location']) ?> | <?= $event['event_date']->format('M d, Y') ?></small></p>
+            </center>
             </div>
           </div>
         </div>
