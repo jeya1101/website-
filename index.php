@@ -45,7 +45,7 @@ if ($stmt !== false) {
       border-radius: 15px;
       text-align: center;
       max-width: 800px;
-      margin: 2rem auto;
+      margin: 3rem auto;
       animation: fadeIn 1.5s ease;
       box-shadow: 0 8px 30px rgba(0,0,0,0.2);
     }
@@ -73,7 +73,7 @@ if ($stmt !== false) {
       background: rgba(255,255,255,0.9);
       padding: 2rem;
       border-radius: 15px;
-      max-width: 1200px;
+      max-width: 900px;
       margin: 3rem auto;
       box-shadow: 0 6px 25px rgba(0,0,0,0.1);
     }
@@ -92,6 +92,30 @@ if ($stmt !== false) {
 </head>
 <body>
 
+  <!-- Welcome area first -->
+  <div class="overlay">
+    <h1>EVENT MANAGEMENT PORTAL</h1>
+    <p class="tagline">Empowering EventHorizon Pty Ltd. to seamlessly plan, organize, and track all your events in one place.</p>
+
+    <?php if ($role === 'organizer' || $role === 'attendee'): ?>
+      <p class="mt-4">Welcome back, <strong><?= htmlspecialchars($name) ?></strong>!</p>
+      <div class="mt-4">
+        <?php if ($role === 'organizer'): ?>
+          <a href="admin_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
+        <?php elseif ($role === 'attendee'): ?>
+          <a href="index_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
+        <?php endif; ?>
+        <a href="logout.php" class="btn btn-outline-primary btn-lg">Logout</a>
+      </div>
+    <?php else: ?>
+      <div class="mt-5">
+        <a href="login.php" class="btn btn-custom btn-lg me-3">Login</a>
+        <a href="register_user.php" class="btn btn-outline-primary btn-lg">Sign up</a>
+      </div>
+    <?php endif; ?>
+  </div>
+
+  <!-- Upcoming events below -->
   <div class="events-section">
     <h2 class="text-center mb-4">Upcoming Events</h2>
     <div class="row g-4 justify-content-center">
@@ -113,28 +137,6 @@ if ($stmt !== false) {
         </div>
       <?php endif; ?>
     </div>
-  </div>
-
-  <div class="overlay">
-    <h1>EVENT MANAGEMENT PORTAL</h1>
-    <p class="tagline">Empowering EventHorizon Pty Ltd. to seamlessly plan, organize, and track all your events in one place.</p>
-
-    <?php if ($role === 'organizer' || $role === 'attendee'): ?>
-      <p class="mt-4">Welcome back, <strong><?= htmlspecialchars($name) ?></strong>!</p>
-      <div class="mt-4">
-        <?php if ($role === 'organizer'): ?>
-          <a href="admin_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
-        <?php elseif ($role === 'attendee'): ?>
-          <a href="index_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
-        <?php endif; ?>
-        <a href="logout.php" class="btn btn-outline-primary btn-lg">Logout</a>
-      </div>
-    <?php else: ?>
-      <div class="mt-5">
-        <a href="login.php" class="btn btn-custom btn-lg me-3">Login</a>
-        <a href="register_user.php" class="btn btn-outline-primary btn-lg">Sign up</a>
-      </div>
-    <?php endif; ?>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
