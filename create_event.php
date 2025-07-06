@@ -25,6 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die(print_r(sqlsrv_errors(), true));
     }
 
+    // Set success flash message
+    $_SESSION['success'] = "✅ Successfully created!";
     header('Location: Manage_Events.php');
     exit;
 }
@@ -39,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="bg-light">
 
 <div class="container mt-4">
-  <!-- Back button -->
   <a href="Manage_Events.php" class="btn btn-outline-primary mb-4 shadow-sm">
     <i class="bi bi-arrow-left"></i> Back to Manage Events
   </a>
