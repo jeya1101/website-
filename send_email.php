@@ -1,98 +1,65 @@
 <?php
-session_start();
-if ($_SESSION['role'] !== 'organizer') {
-    die('Access denied');
-}
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
+require 'vendor/autoload.php';
 include('db.php');
 
 $msg = "";
-$emails = [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $eventId = (int)$_POST['event_id'];
-    $subject = $_POST['subject'];
-    $message = $_POST['message'];
+// Example: Fetch attendees
+$sql = "SELECT u.email, u.name FROM users u 
+        JOIN registrations r ON u.id = r.attendee_id 
+        JOIN events e ON r.event_id = e.id";
+$stmt = sqlsrv_query($conn, $sql);
 
-    // Fetch emails for attendees who registered for this event
-    $sql = "
-        SELECT u.email 
-        FROM registrations r
-        JOIN users u ON r.attendee_id = u.id
-        WHERE r.event_id = ?
-    ";
-    $stmt = sqlsrv_query($conn, $sql, array($eventId));
+if (isset($_POST['send_email'])) {
+    $mail = new PHPMailer(true);
+    try {
+        // SMTP config
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'your@gmail.com'; // YOUR GMAIL
+        $mail->Password = 'your-app-password'; // YOUR APP PASSWORD
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
 
-    if ($stmt) {
+        $mail->setFrom('your@gmail.com', 'Event Admin');
+        $mail->isHTML(true);
+        $mail->Subject = 'Thank you for registering!';
+        
+        $sentCount = 0;
         while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-            $emails[] = $row['email'];
+            $toEmail = $row['email'];
+            $toName = $row['name'];
+            $mail->clearAddresses(); 
+            $mail->addAddress($toEmail, $toName);
+            $mail->Body = "Hi {$toName},<br><br>Thank you for registering. We look forward to seeing you!";
+            $mail->send();
+            $sentCount++;
         }
-    } else {
-        die(print_r(sqlsrv_errors(), true));
+        $msg = "<div class='alert alert-success'>✅ Emails sent to {$sentCount} attendees.</div>";
+
+    } catch (Exception $e) {
+        $msg = "<div class='alert alert-danger'>❌ Email failed: {$mail->ErrorInfo}</div>";
     }
-
-    // Simple mail sending (use PHPMailer in production)
-    $headers = "From: admin@yourevent.com\r\nReply-To: admin@yourevent.com";
-
-    foreach ($emails as $to) {
-        mail($to, $subject, $message, $headers);
-    }
-
-    $msg = "<div class='alert alert-success text-center'>
-            ✅ Emails sent to " . count($emails) . " attendees.
-            </div>";
-}
-
-// Fetch events for dropdown
-$eventsStmt = sqlsrv_query($conn, "SELECT id, title FROM events ORDER BY event_date DESC");
-if ($eventsStmt === false) {
-    die(print_r(sqlsrv_errors(), true));
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Communicate with Attendees</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Send Email</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 <div class="container mt-5">
-    <a href="admin_dashboard.php" class="btn btn-outline-primary mb-4">
-        ← Back to Dashboard
-    </a>
-
-    <div class="card shadow p-4 mx-auto" style="max-width:600px;">
-        <h3 class="mb-4 text-center">Send Email to Attendees</h3>
-
-        <?= $msg ?>
-
-        <form method="POST">
-            <div class="mb-3">
-                <label class="form-label">Select Event</label>
-                <select name="event_id" class="form-select" required>
-                    <option value="">-- Choose Event --</option>
-                    <?php while ($e = sqlsrv_fetch_array($eventsStmt, SQLSRV_FETCH_ASSOC)) { ?>
-                        <option value="<?= $e['id'] ?>">
-                            <?= htmlspecialchars($e['title']) ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Subject</label>
-                <input type="text" name="subject" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Message</label>
-                <textarea name="message" class="form-control" rows="5" required></textarea>
-            </div>
-
-            <button class="btn btn-success w-100">Send Emails</button>
-        </form>
-    </div>
+  <h3>Send Email to Registered Attendees</h3>
+  <?= $msg ?>
+  <form method="POST">
+    <button name="send_email" class="btn btn-primary mt-3">Send Email</button>
+  </form>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
