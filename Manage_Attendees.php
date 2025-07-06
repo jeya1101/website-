@@ -77,7 +77,7 @@ if ($stmt === false) {
   <a href="admin_dashboard.php"><i class="bi bi-house me-2"></i> Dashboard</a>
   <a href="Manage_Events.php"><i class="bi bi-calendar-event me-2"></i> Manage Events</a>
   <a href="Manage_Attendees.php"><i class="bi bi-people me-2"></i> Manage Attendees</a>
-  <a href="#"><i class="bi bi-chat-dots me-2"></i> Manage Chat</a>
+  <a href="send_email.php"><i class="bi bi-chat-dots me-2"></i> Manage Email</a>
   <a href="logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
 </div>
 
