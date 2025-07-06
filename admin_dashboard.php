@@ -100,7 +100,7 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
 
 <div class="main-content">
   <h2>Welcome, <strong><?= htmlspecialchars($adminName) ?></strong></h2>
-  <p>Here's an overview of your events and attendees.</p>
+  
 
   <div class="row mb-4">
     <div class="col-md-4 mb-3">
