@@ -5,6 +5,7 @@ $msg = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name     = $_POST['name'];
     $contact  = $_POST['contact'];
+    $email    = $_POST['email'];
     $username = $_POST['username'];
     $password = $_POST['password'];
     $repass   = $_POST['repassword'];
@@ -33,9 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Hash password
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // Insert user
-        $insertSql = "INSERT INTO users (name, contact, username, password, role) VALUES (?, ?, ?, ?, ?)";
-        $insertParams = array($name, $contact, $username, $hashedPassword, $role);
+        // Insert user with email
+        $insertSql = "INSERT INTO users (name, contact, email, username, password, role) VALUES (?, ?, ?, ?, ?, ?)";
+        $insertParams = array($name, $contact, $email, $username, $hashedPassword, $role);
         $insertStmt = sqlsrv_query($conn, $insertSql, $insertParams);
 
         if ($insertStmt === false) {
@@ -55,13 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <title>Sign Up</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- ✅ Bootstrap Icons CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 <div class="container position-relative vh-100 d-flex justify-content-center align-items-center">
 
-  <!-- ✅ Top left back arrow -->
   <a href="index.php" class="position-absolute top-0 start-0 m-4 btn btn-outline-primary">
     <i class="bi bi-arrow-left"></i> Back
   </a>
@@ -70,12 +69,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h3 class="card-title mb-3 text-center">Create Account</h3>
     <?= $msg ?>
     <form method="POST">
-      <div class="mb-3"><label class="form-label">Full Name</label><input name="name" class="form-control" required></div>
-      <div class="mb-3"><label class="form-label">Contact</label><input name="contact" class="form-control" required></div>
-      <div class="mb-3"><label class="form-label">Username</label><input name="username" class="form-control" required></div>
-      <div class="mb-3"><label class="form-label">Password</label><input type="password" name="password" class="form-control" required></div>
-      <div class="mb-3"><label class="form-label">Confirm Password</label><input type="password" name="repassword" class="form-control" required></div>
-      <div class="mb-3"><label class="form-label">Role</label>
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input name="name" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Contact</label>
+        <input name="contact" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input name="username" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" name="repassword" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Role</label>
         <select name="role" class="form-select" required>
           <option value="" disabled selected>-- Choose Role --</option>
           <option value="organizer">Event Organizer</option>
