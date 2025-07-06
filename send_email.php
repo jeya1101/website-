@@ -4,10 +4,6 @@ if ($_SESSION['role'] !== 'organizer') {
     die('Access denied');
 }
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require 'vendor/autoload.php';
 include('db.php');
 
 $msg = "";
@@ -27,45 +23,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ";
     $stmt = sqlsrv_query($conn, $sql, array($eventId));
 
-    if ($stmt) {
-        while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-            $emails[] = ['email' => $row['email'], 'name' => $row['name']];
-        }
-    } else {
+    if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     }
 
-    // Setup PHPMailer
-    $mail = new PHPMailer(true);
-    try {
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'your@gmail.com'; // 🔥 Your Gmail
-        $mail->Password = 'your-app-password'; // 🔥 Your App Password
-        $mail->SMTPSecure = 'tls';
-        $mail->Port = 587;
-        $mail->setFrom('your@gmail.com', 'Event Admin');
-        $mail->isHTML(true);
+    // Prepare
+    $sentList = "";
+    $headers = "From: yourgmail@gmail.com\r\n";  // 🔥 your sending Gmail
+    $headers .= "Reply-To: yourgmail@gmail.com\r\n";
+    $headers .= "Content-type: text/html\r\n";
 
-        $sentCount = 0;
-        foreach ($emails as $attendee) {
-            $mail->clearAddresses();
-            $mail->addAddress($attendee['email'], $attendee['name']);
-            $mail->Subject = $subject;
-            $mail->Body = "Hi {$attendee['name']},<br><br>{$message}";
-            $mail->send();
-            $sentCount++;
-        }
+    // Loop through emails
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        $to = $row['email'];
+        $name = $row['name'];
 
-        $msg = "<div class='alert alert-success text-center'>
-                ✅ Reminder emails sent to {$sentCount} attendees.
-                </div>";
-    } catch (Exception $e) {
-        $msg = "<div class='alert alert-danger text-center'>
-                ❌ Email failed: {$mail->ErrorInfo}
-                </div>";
+        $personalMessage = "Hi {$name},<br><br>{$message}";
+        // mail() does not parse HTML by default, but servers usually respect content-type
+        mail($to, $subject, $personalMessage, $headers);
+
+        $sentList .= "<li>{$to} ({$name})</li>";
     }
+
+    $msg = "<div class='alert alert-success text-center'>
+            ✅ Emails sent to:<ul style='text-align:left;'>$sentList</ul></div>";
 }
 
 // Fetch events for dropdown
@@ -77,17 +58,15 @@ if ($eventsStmt === false) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Send Reminder</title>
+    <title>Send Email to Attendees</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 <div class="container mt-5">
-    <a href="admin_dashboard.php" class="btn btn-outline-primary mb-4">
-        ← Back to Dashboard
-    </a>
+    <a href="admin_dashboard.php" class="btn btn-outline-primary mb-4">← Back to Dashboard</a>
 
     <div class="card shadow p-4 mx-auto" style="max-width:600px;">
-        <h3 class="mb-4 text-center">Send Reminder Email</h3>
+        <h3 class="mb-4 text-center">Send Email to Attendees</h3>
 
         <?= $msg ?>
 
@@ -118,5 +97,6 @@ if ($eventsStmt === false) {
         </form>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
