@@ -26,9 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die(print_r(sqlsrv_errors(), true));
     }
 
-    $_SESSION['success'] = "✅ Successfully created!";
-    header('Location: Manage_Events.php');
-    exit;
+  $msg = "<div class='alert alert-success text-center'>✅ Successfully created!</div>";
 }
 ?>
 <!DOCTYPE html>
