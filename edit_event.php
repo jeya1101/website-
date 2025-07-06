@@ -34,6 +34,7 @@ $msg = "";
 // Handle update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
+    $description = $_POST['description'];
     $date = $_POST['date'];
     $location = $_POST['location'];
     $capacity = (int)$_POST['capacity'];
@@ -42,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Convert to SQL DATETIME
     $dateTimeFormatted = date('Y-m-d H:i:s', strtotime($date));
 
-    $updateSql = "UPDATE events SET title = ?, event_date = ?, location = ?, capacity = ?, fee = ? WHERE id = ?";
-    $updateParams = array($name, $dateTimeFormatted, $location, $capacity, $fee, $id);
+    $updateSql = "UPDATE events SET title = ?, description = ?, event_date = ?, location = ?, capacity = ?, fee = ? WHERE id = ?";
+    $updateParams = array($name, $description, $dateTimeFormatted, $location, $capacity, $fee, $id);
     $updateStmt = sqlsrv_query($conn, $updateSql, $updateParams);
 
     if ($updateStmt === false) {
@@ -81,6 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="mb-3">
         <label class="form-label">Event Name</label>
         <input type="text" name="name" value="<?= htmlspecialchars($e['title']) ?>" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control" rows="3" required><?= htmlspecialchars($e['description']) ?></textarea>
       </div>
 
       <div class="mb-3">
