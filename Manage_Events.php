@@ -16,27 +16,6 @@ if ($stmt && ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC))) {
     $adminName = $row['name'];
 }
 
-// Get metrics
-$totalEvents = 0;
-$totalAttendees = 0;
-
-$countEventsStmt = sqlsrv_query($conn, "SELECT COUNT(*) AS total FROM events");
-if ($row = sqlsrv_fetch_array($countEventsStmt, SQLSRV_FETCH_ASSOC)) {
-    $totalEvents = $row['total'];
-}
-
-$countAttendeesStmt = sqlsrv_query($conn, "SELECT COUNT(*) AS total FROM registrations");
-if ($row = sqlsrv_fetch_array($countAttendeesStmt, SQLSRV_FETCH_ASSOC)) {
-    $totalAttendees = $row['total'];
-}
-
-// Upcoming
-$futureStmt = sqlsrv_query($conn, "SELECT COUNT(*) AS upcoming FROM events WHERE event_date > GETDATE()");
-$upcoming = 0;
-if ($r = sqlsrv_fetch_array($futureStmt, SQLSRV_FETCH_ASSOC)) {
-    $upcoming = $r['upcoming'];
-}
-
 // Fetch events
 $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC");
 ?>
@@ -44,7 +23,7 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Dashboard - Event Organizer</title>
+  <title>Manage Events - Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -75,15 +54,22 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
       margin-left: 240px;
       padding: 2rem;
     }
-    .card-stat {
-      border: none;
-      color: #fff;
-      padding: 1.5rem;
+    .table-container {
+      background: #fff;
       border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
-    .bg-events { background: #007bff; }
-    .bg-registrations { background: #28a745; }
-    .bg-upcoming { background: #ffc107; color: #212529; }
+    .table thead {
+      background-color: #0d6efd;
+      color: #fff;
+    }
+    .table td, .table th {
+      vertical-align: middle;
+    }
+    .btn-action {
+      margin-right: 5px;
+    }
   </style>
 </head>
 <body>
@@ -108,49 +94,47 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
 
   <h2 class="mb-4"><i class="bi bi-calendar-event"></i> Manage Events</h2>
  
-  <!-- Add New Event Button -->
   <div class="mb-4">
     <a href="create_event.php" class="btn btn-primary shadow-sm">
       <i class="bi bi-plus-circle"></i> Add New Event
     </a>
   </div>
 
-
-  <h4>All Events</h4>
-  <table class="table table-hover mt-3">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Description</th>  
-        <th>Date</th>
-        <th>Location</th>
-        <th>Capacity</th>
-        <th>Fee (RM)</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-  <?php while ($event = sqlsrv_fetch_array($eventsStmt, SQLSRV_FETCH_ASSOC)) { ?>
-  <tr>
-    <td><?= htmlspecialchars($event['title']) ?></td>
-    <td><?= htmlspecialchars($event['description']) ?></td>
-    <td><?= $event['event_date']->format('Y-m-d H:i') ?></td>
-    <td><?= htmlspecialchars($event['location']) ?></td>
-    <td><?= htmlspecialchars($event['capacity']) ?></td>
-    <td><?= 'RM ' . number_format($event['fee'], 2) ?></td>
-    <td>
-      <a href="edit_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-warning">
-        <i class="bi bi-pencil"></i> Update
-      </a>
-      <a href="delete_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this event?')">
-        <i class="bi bi-trash"></i> Delete
-      </a>
-    </td>
-  </tr>
-  <?php } ?>
-</tbody>
-
-  </table>
+  <div class="table-container">
+    <table class="table table-striped table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>  
+          <th>Date</th>
+          <th>Location</th>
+          <th>Capacity</th>
+          <th>Fee (RM)</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      <?php while ($event = sqlsrv_fetch_array($eventsStmt, SQLSRV_FETCH_ASSOC)) { ?>
+        <tr>
+          <td><?= htmlspecialchars($event['title']) ?></td>
+          <td><?= htmlspecialchars($event['description']) ?></td>
+          <td><?= $event['event_date']->format('Y-m-d H:i') ?></td>
+          <td><?= htmlspecialchars($event['location']) ?></td>
+          <td><?= htmlspecialchars($event['capacity']) ?></td>
+          <td><?= 'RM ' . number_format($event['fee'], 2) ?></td>
+          <td>
+            <a href="edit_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-warning btn-action">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <a href="delete_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-danger btn-action" onclick="return confirm('Delete this event?')">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+        </tr>
+      <?php } ?>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
