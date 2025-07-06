@@ -104,7 +104,7 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
 
   <div class="row mb-4">
     <div class="col-md-4 mb-3">
-      <div class="card card-stat p-3 text-white" style="background: #0d6efd;">
+      <div class="card card-stat p-3 text-white" style="background: #007bff;">
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <h5>Total Events</h5>
@@ -115,7 +115,7 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
       </div>
     </div>
     <div class="col-md-4 mb-3">
-      <div class="card card-stat p-3 text-white" style="background: #198754;">
+      <div class="card card-stat p-3 text-white" style="background: #28a745;">
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <h5>Total Registrations</h5>
@@ -126,7 +126,7 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
       </div>
     </div>
     <div class="col-md-4 mb-3">
-      <div class="card card-stat p-3 text-white" style="background: #6f42c1;">
+      <div class="card card-stat p-3 text-white" style="background: #ffc107;">
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <h5>Upcoming Events</h5>
