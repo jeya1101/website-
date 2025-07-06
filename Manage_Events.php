@@ -106,9 +106,36 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
     <?php unset($_SESSION['success']); ?>
   <?php endif; ?>
 
-  <h2 class="mb-4">Welcome Back, <strong><?= htmlspecialchars($adminName) ?></strong></h2>
+  <h2 class="mb-3">Welcome Back, <strong><?= htmlspecialchars($adminName) ?></strong></h2>
 
-  
+  <!-- Add New Event Button -->
+  <div class="mb-4">
+    <a href="create_event.php" class="btn btn-primary shadow-sm">
+      <i class="bi bi-plus-circle"></i> Add New Event
+    </a>
+  </div>
+
+  <!-- Metrics cards -->
+  <div class="row mb-4">
+    <div class="col-md-4 mb-3">
+      <div class="card-stat bg-events">
+        <h5><i class="bi bi-calendar-event me-2"></i> Total Events</h5>
+        <h3><?= $totalEvents ?></h3>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card-stat bg-registrations">
+        <h5><i class="bi bi-person-check me-2"></i> Total Registrations</h5>
+        <h3><?= $totalAttendees ?></h3>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card-stat bg-upcoming">
+        <h5><i class="bi bi-clock-history me-2"></i> Upcoming Events</h5>
+        <h3><?= $upcoming ?></h3>
+      </div>
+    </div>
+  </div>
 
   <h4>All Events</h4>
   <table class="table table-hover mt-3">
@@ -118,6 +145,7 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
         <th>Date</th>
         <th>Location</th>
         <th>Capacity</th>
+        <th>Fee (RM)</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -128,9 +156,11 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
         <td><?= $event['event_date']->format('Y-m-d H:i') ?></td>
         <td><?= htmlspecialchars($event['location']) ?></td>
         <td><?= htmlspecialchars($event['capacity']) ?></td>
+        <td><?= 'RM ' . number_format($event['fee'], 2) ?></td>
         <td>
-          <a href="edit_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> Edit</a>
-          <a href="view_attendees.php?event_id=<?= $event['id'] ?>" class="btn btn-sm btn-info"><i class="bi bi-eye"></i> Attendees</a>
+          <a href="edit_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-warning">
+            <i class="bi bi-pencil"></i> Update
+          </a>
           <a href="delete_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this event?')">
             <i class="bi bi-trash"></i> Delete
           </a>
