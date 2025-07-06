@@ -106,8 +106,8 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
     <?php unset($_SESSION['success']); ?>
   <?php endif; ?>
 
-  <h2 class="mb-3">Welcome Back, <strong><?= htmlspecialchars($adminName) ?></strong></h2>
-
+  <h2 class="mb-4"><i class="bi bi-calendar-event"></i> Manage Events</h2>
+ 
   <!-- Add New Event Button -->
   <div class="mb-4">
     <a href="create_event.php" class="btn btn-primary shadow-sm">
@@ -121,6 +121,7 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
     <thead>
       <tr>
         <th>Title</th>
+        <th>Description</th>  
         <th>Date</th>
         <th>Location</th>
         <th>Capacity</th>
@@ -129,24 +130,26 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
       </tr>
     </thead>
     <tbody>
-      <?php while ($event = sqlsrv_fetch_array($eventsStmt, SQLSRV_FETCH_ASSOC)) { ?>
-      <tr>
-        <td><?= htmlspecialchars($event['title']) ?></td>
-        <td><?= $event['event_date']->format('Y-m-d H:i') ?></td>
-        <td><?= htmlspecialchars($event['location']) ?></td>
-        <td><?= htmlspecialchars($event['capacity']) ?></td>
-        <td><?= 'RM ' . number_format($event['fee'], 2) ?></td>
-        <td>
-          <a href="edit_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-warning">
-            <i class="bi bi-pencil"></i> Update
-          </a>
-          <a href="delete_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this event?')">
-            <i class="bi bi-trash"></i> Delete
-          </a>
-        </td>
-      </tr>
-      <?php } ?>
-    </tbody>
+  <?php while ($event = sqlsrv_fetch_array($eventsStmt, SQLSRV_FETCH_ASSOC)) { ?>
+  <tr>
+    <td><?= htmlspecialchars($event['title']) ?></td>
+    <td><?= htmlspecialchars($event['description']) ?></td>
+    <td><?= $event['event_date']->format('Y-m-d H:i') ?></td>
+    <td><?= htmlspecialchars($event['location']) ?></td>
+    <td><?= htmlspecialchars($event['capacity']) ?></td>
+    <td><?= 'RM ' . number_format($event['fee'], 2) ?></td>
+    <td>
+      <a href="edit_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-warning">
+        <i class="bi bi-pencil"></i> Update
+      </a>
+      <a href="delete_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this event?')">
+        <i class="bi bi-trash"></i> Delete
+      </a>
+    </td>
+  </tr>
+  <?php } ?>
+</tbody>
+
   </table>
 </div>
 
