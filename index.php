@@ -14,7 +14,6 @@ if ($user_id) {
     }
 }
 
-// Fetch upcoming events
 $events = [];
 $sql = "SELECT TOP 6 id, title, description, event_date, location FROM events ORDER BY event_date ASC";
 $stmt = sqlsrv_query($conn, $sql);
@@ -27,116 +26,166 @@ if ($stmt !== false) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Event Management Portal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background: url('index.jpg') center center no-repeat;
-      background-size: cover;
-      min-height: 100vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #333;
-    }
-    .overlay {
-      background: rgba(255, 255, 255, 0.85);
-      padding: 3rem;
-      border-radius: 15px;
-      text-align: center;
-      max-width: 800px;
-      margin: 3rem auto;
-      animation: fadeIn 1.5s ease;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-    }
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #2c3e50;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-    }
-    p.tagline {
-      font-size: 1.2rem;
-      margin-top: 1rem;
-      color: #555;
-    }
-    .btn-custom, .btn-outline-primary {
-      border: 2px solid #007bff;
-      color: #007bff;
-      transition: all 0.3s ease;
-    }
-    .btn-custom:hover, .btn-outline-primary:hover {
-      background: #007bff;
-      color: #fff;
-    }
-    .events-section {
-      background: rgba(255,255,255,0.9);
-      padding: 2rem;
-      border-radius: 15px;
-      max-width: 1200px;
-      margin: 2rem auto;
-      box-shadow: 0 6px 25px rgba(0,0,0,0.1);
-    }
-    .event-card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .event-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    }
-    @keyframes fadeIn {
-      from {opacity:0; transform: translateY(-20px);}
-      to {opacity:1; transform: translateY(0);}
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Event Management Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body {
+    background: linear-gradient(135deg, #e0eafc, #cfdef3);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .overlay {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2.5rem;
+    border-radius: 18px;
+    text-align: center;
+    max-width: 600px;
+    margin-top: 3rem;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    animation: fadeIn 1.2s ease;
+  }
+  .overlay h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #34495e;
+    letter-spacing: 1px;
+  }
+  p.tagline {
+    font-size: 1.1rem;
+    margin-top: 0.8rem;
+    color: #555;
+  }
+  .btn-custom, .btn-outline-primary {
+    border: 2px solid #3498db;
+    color: #3498db;
+    transition: all 0.3s ease;
+  }
+  .btn-custom:hover, .btn-outline-primary:hover {
+    background: #3498db;
+    color: #fff;
+  }
+  .events-section {
+    background: rgba(255,255,255,0.93);
+    padding: 2rem;
+    border-radius: 18px;
+    margin: 3rem auto;
+    max-width: 900px;
+    width: 90%;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    animation: fadeInUp 1.5s ease;
+  }
+  .events-section h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  /* BEAUTIFUL GLASS + GRADIENT BORDER */
+  .event-card {
+    position: relative;
+    border: none;
+    border-radius: 15px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .event-card::before {
+    content: "";
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    z-index: -1;
+    background: linear-gradient(135deg, #3498db, #8e44ad, #3498db);
+    border-radius: 17px;
+    background-size: 400% 400%;
+    animation: gradientAnimation 6s ease infinite;
+  }
+  .event-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+  }
+
+  .event-card .card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2980b9;
+  }
+  .event-card .card-text {
+    font-size: 0.95rem;
+    color: #555;
+  }
+
+  @keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes fadeIn {
+    from {opacity:0; transform: translateY(-20px);}
+    to {opacity:1; transform: translateY(0);}
+  }
+  @keyframes fadeInUp {
+    from {opacity:0; transform: translateY(30px);}
+    to {opacity:1; transform: translateY(0);}
+  }
+</style>
 </head>
 <body>
 
-  <div class="overlay">
-    <h1>EVENT MANAGEMENT PORTAL</h1>
-    <p class="tagline">Empowering EventHorizon Pty Ltd. to seamlessly plan, organize, and track all your events in one place.</p>
+<div class="overlay">
+  <h1>EVENT MANAGEMENT PORTAL</h1>
+  <p class="tagline">Plan, organize & track all your events with EventHorizon Pty Ltd.</p>
 
-    <?php if ($role === 'organizer' || $role === 'attendee'): ?>
-      <p class="mt-4">Welcome back, <strong><?= htmlspecialchars($name) ?></strong>!</p>
-      <div class="mt-4">
-        <?php if ($role === 'organizer'): ?>
-          <a href="admin_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
-        <?php elseif ($role === 'attendee'): ?>
-          <a href="index_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
-        <?php endif; ?>
-        <a href="logout.php" class="btn btn-outline-primary btn-lg">Logout</a>
-      </div>
+  <?php if ($role === 'organizer' || $role === 'attendee'): ?>
+    <p class="mt-4">Welcome, <strong><?= htmlspecialchars($name) ?></strong>!</p>
+    <div class="mt-4">
+      <?php if ($role === 'organizer'): ?>
+        <a href="admin_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
+      <?php elseif ($role === 'attendee'): ?>
+        <a href="index_dashboard.php" class="btn btn-custom btn-lg me-3">Go to Dashboard</a>
+      <?php endif; ?>
+      <a href="logout.php" class="btn btn-outline-primary btn-lg">Logout</a>
+    </div>
+  <?php else: ?>
+    <div class="mt-5">
+      <a href="login.php" class="btn btn-custom btn-lg me-3">Login</a>
+      <a href="register_user.php" class="btn btn-outline-primary btn-lg">Sign up</a>
+    </div>
+  <?php endif; ?>
+</div>
+
+<div class="events-section">
+  <h2>Upcoming Events</h2>
+  <div class="row g-4">
+    <?php if (count($events) > 0): ?>
+      <?php foreach ($events as $event): ?>
+        <div class="col-md-4">
+          <div class="card event-card h-100">
+            <div class="card-body">
+              <h5 class="card-title"><?= htmlspecialchars($event['title']) ?></h5>
+              <p class="card-text"><?= htmlspecialchars($event['description']) ?></p>
+              <p class="card-text"><small class="text-muted"><?= htmlspecialchars($event['location']) ?> | <?= $event['event_date']->format('M d, Y') ?></small></p>
+            </div>
+          </div>
+        </div>
+      <?php endforeach; ?>
     <?php else: ?>
-      <div class="mt-5">
-        <a href="login.php" class="btn btn-custom btn-lg me-3">Login</a>
-        <a href="register_user.php" class="btn btn-outline-primary btn-lg">Sign up</a>
+      <div class="col-12">
+        <p class="text-center">No upcoming events at the moment. Please check back later!</p>
       </div>
     <?php endif; ?>
   </div>
+</div>
 
-  <div class="events-section">
-    <h2 class="text-center mb-4">Upcoming Events</h2>
-    <div class="row g-4">
-      <?php if (count($events) > 0): ?>
-        <?php foreach ($events as $event): ?>
-          <div class="col-md-4">
-            <div class="card event-card h-100">
-              <div class="card-body">
-                <h5 class="card-title"><?= htmlspecialchars($event['title']) ?></h5>
-                <p class="card-text"><?= htmlspecialchars($event['description']) ?></p>
-                <p class="card-text"><small class="text-muted"><?= $event['location'] ?> | <?= $event['event_date']->format('M d, Y') ?></small></p>
-              </div>
-            </div>
-          </div>
-        <?php endforeach; ?>
-      <?php else: ?>
-        <div class="col-12">
-          <p class="text-center">No upcoming events at the moment. Please check back later!</p>
-        </div>
-      <?php endif; ?>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
