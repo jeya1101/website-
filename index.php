@@ -71,10 +71,10 @@ if ($stmt !== false) {
     }
     .events-section {
       background: rgba(255, 255, 255, 0.85);
-      padding: 3rem;
+      padding: 2rem;
       border-radius: 15px;
       max-width: 900px;
-      margin: 3rem auto;
+      margin: 2rem auto;
       animation: fadeIn 1.5s ease;
       box-shadow: 0 8px 30px rgba(0,0,0,0.2);
     }
