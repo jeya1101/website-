@@ -14,32 +14,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $subject = $_POST['subject'];
     $message = $_POST['message'];
 
-    // Fetch emails
+    // Fetch emails for attendees who registered for this event
     $sql = "
         SELECT u.email 
         FROM registrations r
-        JOIN users u ON r.user_id = u.id
-        WHERE r.event_id = ?";
+        JOIN users u ON r.attendee_id = u.id
+        WHERE r.event_id = ?
+    ";
     $stmt = sqlsrv_query($conn, $sql, array($eventId));
 
     if ($stmt) {
         while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
             $emails[] = $row['email'];
         }
+    } else {
+        die(print_r(sqlsrv_errors(), true));
     }
 
-    // Simple mail sending (uses PHP mail())
+    // Simple mail sending (use PHPMailer in production)
     $headers = "From: admin@yourevent.com\r\nReply-To: admin@yourevent.com";
 
     foreach ($emails as $to) {
         mail($to, $subject, $message, $headers);
     }
 
-    $msg = "<div class='alert alert-success text-center'>✅ Emails sent to ".count($emails)." attendees.</div>";
+    $msg = "<div class='alert alert-success text-center'>
+            ✅ Emails sent to " . count($emails) . " attendees.
+            </div>";
 }
 
 // Fetch events for dropdown
 $eventsStmt = sqlsrv_query($conn, "SELECT id, title FROM events ORDER BY event_date DESC");
+if ($eventsStmt === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -64,7 +72,9 @@ $eventsStmt = sqlsrv_query($conn, "SELECT id, title FROM events ORDER BY event_d
                 <select name="event_id" class="form-select" required>
                     <option value="">-- Choose Event --</option>
                     <?php while ($e = sqlsrv_fetch_array($eventsStmt, SQLSRV_FETCH_ASSOC)) { ?>
-                        <option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['title']) ?></option>
+                        <option value="<?= $e['id'] ?>">
+                            <?= htmlspecialchars($e['title']) ?>
+                        </option>
                     <?php } ?>
                 </select>
             </div>
