@@ -58,7 +58,7 @@ if (isset($_POST['send_email'])) {
   <h3>Send Email to Registered Attendees</h3>
   <?= $msg ?>
   <form method="POST">
-    <button name="send_email" class="btn btn-primary mt-3">Send Email</button>
+    <button name="send_email.php" class="btn btn-primary mt-3">Send Email</button>
   </form>
 </div>
 </body>
