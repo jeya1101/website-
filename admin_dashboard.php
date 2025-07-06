@@ -146,7 +146,6 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
         <th>Date</th>
         <th>Location</th>
         <th>Capacity</th>
-        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
