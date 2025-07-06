@@ -8,7 +8,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'organizer') {
     exit;
 }
 
-// Get some metrics
+// Fetch organizer name
+$adminName = '';
+$adminStmt = sqlsrv_query($conn, "SELECT name FROM users WHERE id = ?", array($_SESSION['user_id']));
+if ($adminStmt && ($row = sqlsrv_fetch_array($adminStmt, SQLSRV_FETCH_ASSOC))) {
+    $adminName = $row['name'];
+}
+
+// Metrics
 $totalEvents = 0;
 $totalAttendees = 0;
 
@@ -20,6 +27,12 @@ if ($row = sqlsrv_fetch_array($countEventsStmt, SQLSRV_FETCH_ASSOC)) {
 $countAttendeesStmt = sqlsrv_query($conn, "SELECT COUNT(*) AS total FROM registrations");
 if ($row = sqlsrv_fetch_array($countAttendeesStmt, SQLSRV_FETCH_ASSOC)) {
     $totalAttendees = $row['total'];
+}
+
+$futureStmt = sqlsrv_query($conn, "SELECT COUNT(*) AS upcoming FROM events WHERE event_date > GETDATE()");
+$upcoming = 0;
+if ($r = sqlsrv_fetch_array($futureStmt, SQLSRV_FETCH_ASSOC)) {
+    $upcoming = $r['upcoming'];
 }
 
 // Fetch events
@@ -62,12 +75,15 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
       padding: 2rem;
     }
     .card-stat {
-      background: #fff;
       border: none;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      transition: all 0.3s;
     }
-    .card-stat h3 {
-      font-size: 2rem;
+    .card-stat i {
+      opacity: 0.8;
+    }
+    .card-stat:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     }
   </style>
 </head>
@@ -77,39 +93,47 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
   <h4 class="text-center mb-4"><i class="bi bi-speedometer2 me-2"></i> Admin Panel</h4>
   <a href="admin_dashboard.php"><i class="bi bi-house me-2"></i> Dashboard</a>
   <a href="Manage_Events.php"><i class="bi bi-calendar-event me-2"></i> Manage Event</a>
-  <a href="Manage_Attendees.php"><i class="bi bi-people me-2"></i>Manage Attendees</a>
-  <a href="#"><i class="bi bi-chat-dots me-2"></i>Manage Chat</a>
+  <a href="Manage_Attendees.php"><i class="bi bi-people me-2"></i> Manage Attendees</a>
+  <a href="#"><i class="bi bi-chat-dots me-2"></i> Manage Chat</a>
   <a href="logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
 </div>
 
 <div class="main-content">
-  <h2>Welcome, <strong><?= htmlspecialchars($_SESSION['role']) ?></strong></h2>
+  <h2>Welcome, <strong><?= htmlspecialchars($adminName) ?></strong></h2>
   <p>Here's an overview of your events and attendees.</p>
 
   <div class="row mb-4">
-    <div class="col-md-4">
-      <div class="card card-stat p-3">
-        <h5>Total Events</h5>
-        <h3><?= $totalEvents ?></h3>
+    <div class="col-md-4 mb-3">
+      <div class="card card-stat p-3 text-white" style="background: #0d6efd;">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h5>Total Events</h5>
+            <h3><?= $totalEvents ?></h3>
+          </div>
+          <i class="bi bi-calendar-event" style="font-size:2rem;"></i>
+        </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card card-stat p-3">
-        <h5>Total Registrations</h5>
-        <h3><?= $totalAttendees ?></h3>
+    <div class="col-md-4 mb-3">
+      <div class="card card-stat p-3 text-white" style="background: #198754;">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h5>Total Registrations</h5>
+            <h3><?= $totalAttendees ?></h3>
+          </div>
+          <i class="bi bi-people" style="font-size:2rem;"></i>
+        </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card card-stat p-3">
-        <h5>Upcoming Events</h5>
-        <?php
-          $futureStmt = sqlsrv_query($conn, "SELECT COUNT(*) AS upcoming FROM events WHERE event_date > GETDATE()");
-          $upcoming = 0;
-          if ($r = sqlsrv_fetch_array($futureStmt, SQLSRV_FETCH_ASSOC)) {
-            $upcoming = $r['upcoming'];
-          }
-        ?>
-        <h3><?= $upcoming ?></h3>
+    <div class="col-md-4 mb-3">
+      <div class="card card-stat p-3 text-white" style="background: #6f42c1;">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h5>Upcoming Events</h5>
+            <h3><?= $upcoming ?></h3>
+          </div>
+          <i class="bi bi-clock-history" style="font-size:2rem;"></i>
+        </div>
       </div>
     </div>
   </div>
