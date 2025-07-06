@@ -82,7 +82,6 @@ if ($stmt === false) {
 
 <div class="content">
   <h2 class="mb-4"><i class="bi bi-people"></i> Manage Attendees</h2>  
-  <br>
   <a href="download_attendees.php" class="btn btn-primary mb-4">
   <i class="bi bi-download me-1"></i> Download List
   </a>
