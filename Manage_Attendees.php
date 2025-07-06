@@ -13,7 +13,8 @@ $sql = "
     SELECT 
         r.id AS reg_id, 
         u.name AS attendee_name, 
-        u.contact AS attendee_contact, 
+        u.contact AS attendee_contact,
+        u.email AS attendee_email,  -- added email
         e.title AS event_title,
         r.payment_status,
         r.bank,
@@ -83,7 +84,7 @@ if ($stmt === false) {
 <div class="content">
   <h2 class="mb-4"><i class="bi bi-people"></i> Manage Attendees</h2>  
   <a href="download_attendees.php" class="btn btn-primary mb-4">
-  <i class="bi bi-download me-1"></i> Download List
+    <i class="bi bi-download me-1"></i> Download List
   </a>
   
   <table class="table table-striped align-middle shadow-sm">
@@ -91,6 +92,7 @@ if ($stmt === false) {
       <tr>
         <th>#</th>
         <th>Attendee Name</th>
+        <th>Email</th>
         <th>Contact</th>
         <th>Event</th>
         <th>Payment</th>
@@ -100,27 +102,28 @@ if ($stmt === false) {
     </thead>
     <tbody>
     <?php 
-$count = 1;
-while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) { ?>
-  <tr>
-    <td><?= $count++ ?></td>
-    <td><?= htmlspecialchars($row['attendee_name']) ?></td>
-    <td><?= htmlspecialchars($row['attendee_contact']) ?></td>
-    <td><?= htmlspecialchars($row['event_title']) ?></td>
-    <td>
-      <?php 
-        $status = strtolower($row['payment_status']);
-        if ($status === 'pending') {
-            echo '<span class="badge bg-danger">Pending</span>';
-        } else {
-            echo '<span class="badge bg-success">'.htmlspecialchars($row['payment_status']).'</span>';
-        }
-      ?>
-    </td>
-    <td><?= htmlspecialchars($row['bank']) ?></td>
-    <td><?= $row['created_at']->format('Y-m-d H:i') ?></td>
-  </tr>
-<?php } ?>
+    $count = 1;
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) { ?>
+      <tr>
+        <td><?= $count++ ?></td>
+        <td><?= htmlspecialchars($row['attendee_name']) ?></td>
+        <td><?= htmlspecialchars($row['attendee_email']) ?></td>
+        <td><?= htmlspecialchars($row['attendee_contact']) ?></td>
+        <td><?= htmlspecialchars($row['event_title']) ?></td>
+        <td>
+          <?php 
+            $status = strtolower($row['payment_status']);
+            if ($status === 'pending') {
+                echo '<span class="badge bg-danger">Pending</span>';
+            } else {
+                echo '<span class="badge bg-success">'.htmlspecialchars($row['payment_status']).'</span>';
+            }
+          ?>
+        </td>
+        <td><?= htmlspecialchars($row['bank']) ?></td>
+        <td><?= $row['created_at']->format('Y-m-d H:i') ?></td>
+      </tr>
+    <?php } ?>
     </tbody>
   </table>
 </div>
