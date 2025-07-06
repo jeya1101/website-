@@ -115,27 +115,6 @@ $eventsStmt = sqlsrv_query($conn, "SELECT * FROM events ORDER BY event_date DESC
     </a>
   </div>
 
-  <!-- Metrics cards -->
-  <div class="row mb-4">
-    <div class="col-md-4 mb-3">
-      <div class="card-stat bg-events">
-        <h5><i class="bi bi-calendar-event me-2"></i> Total Events</h5>
-        <h3><?= $totalEvents ?></h3>
-      </div>
-    </div>
-    <div class="col-md-4 mb-3">
-      <div class="card-stat bg-registrations">
-        <h5><i class="bi bi-person-check me-2"></i> Total Registrations</h5>
-        <h3><?= $totalAttendees ?></h3>
-      </div>
-    </div>
-    <div class="col-md-4 mb-3">
-      <div class="card-stat bg-upcoming">
-        <h5><i class="bi bi-clock-history me-2"></i> Upcoming Events</h5>
-        <h3><?= $upcoming ?></h3>
-      </div>
-    </div>
-  </div>
 
   <h4>All Events</h4>
   <table class="table table-hover mt-3">
