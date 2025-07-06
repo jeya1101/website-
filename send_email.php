@@ -9,46 +9,42 @@ include('db.php');
 $msg = "";
 $emails = [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $eventId = (int)$_POST['event_id'];
     $subject = $_POST['subject'];
     $message = $_POST['message'];
 
-    // Fetch emails for attendees who registered for this event
-    $sql = "
-        SELECT u.email, u.name 
-        FROM registrations r
-        JOIN users u ON r.attendee_id = u.id
-        WHERE r.event_id = ?
-    ";
+    // Fetch attendee emails
+    $sql = "SELECT u.email FROM registrations r JOIN users u ON r.attendee_id = u.id WHERE r.event_id = ?";
     $stmt = sqlsrv_query($conn, $sql, array($eventId));
-
-    if ($stmt === false) {
-        die(print_r(sqlsrv_errors(), true));
+    $emails = [];
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        $emails[] = $row['email'];
     }
 
-    // Prepare
-    $sentList = "";
-    $headers = "From: yourgmail@gmail.com\r\n";  // 🔥 your sending Gmail
-    $headers .= "Reply-To: yourgmail@gmail.com\r\n";
-    $headers .= "Content-type: text/html\r\n";
+    // Fetch organizer email for Reply-To
+    $organizerId = $_SESSION['user_id'];
+    $orgStmt = sqlsrv_query($conn, "SELECT email FROM users WHERE id = ?", array($organizerId));
+    $org = sqlsrv_fetch_array($orgStmt, SQLSRV_FETCH_ASSOC);
+    $replyToEmail = $org['email'] ?? 'jeyasakthi01@gmail.com';
 
-    // Loop through emails
-    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-        $to = $row['email'];
-        $name = $row['name'];
+    // Headers
+    $headers = "From: Admin <jeyasakthi01@gmail.com>\r\n";
+    $headers .= "Reply-To: {$replyToEmail}\r\n";
+    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
 
-        $personalMessage = "Hi {$name},<br><br>{$message}";
-        // mail() does not parse HTML by default, but servers usually respect content-type
-        mail($to, $subject, $personalMessage, $headers);
-
-        $sentList .= "<li>{$to} ({$name})</li>";
+    // Send emails
+    foreach ($emails as $to) {
+        mail($to, $subject, $message, $headers);
     }
 
     $msg = "<div class='alert alert-success text-center'>
-            ✅ Emails sent to:<ul style='text-align:left;'>$sentList</ul></div>";
+            ✅ Emails sent to ".count($emails)." attendees.
+            </div>";
 }
 
+   
 // Fetch events for dropdown
 $eventsStmt = sqlsrv_query($conn, "SELECT id, title FROM events ORDER BY event_date DESC");
 if ($eventsStmt === false) {
