@@ -4,6 +4,10 @@ if ($_SESSION['role'] !== 'organizer') {
     die('Access denied');
 }
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php';
 include('db.php');
 
 $msg = "";
@@ -16,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Fetch emails for attendees who registered for this event
     $sql = "
-        SELECT u.email 
+        SELECT u.email, u.name 
         FROM registrations r
         JOIN users u ON r.attendee_id = u.id
         WHERE r.event_id = ?
@@ -25,22 +29,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt) {
         while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-            $emails[] = $row['email'];
+            $emails[] = ['email' => $row['email'], 'name' => $row['name']];
         }
     } else {
         die(print_r(sqlsrv_errors(), true));
     }
 
-    // Simple mail sending (use PHPMailer in production)
-    $headers = "From: admin@yourevent.com\r\nReply-To: admin@yourevent.com";
+    // Setup PHPMailer
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'your@gmail.com'; // 🔥 Your Gmail
+        $mail->Password = 'your-app-password'; // 🔥 Your App Password
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+        $mail->setFrom('your@gmail.com', 'Event Admin');
+        $mail->isHTML(true);
 
-    foreach ($emails as $to) {
-        mail($to, $subject, $message, $headers);
+        $sentCount = 0;
+        foreach ($emails as $attendee) {
+            $mail->clearAddresses();
+            $mail->addAddress($attendee['email'], $attendee['name']);
+            $mail->Subject = $subject;
+            $mail->Body = "Hi {$attendee['name']},<br><br>{$message}";
+            $mail->send();
+            $sentCount++;
+        }
+
+        $msg = "<div class='alert alert-success text-center'>
+                ✅ Reminder emails sent to {$sentCount} attendees.
+                </div>";
+    } catch (Exception $e) {
+        $msg = "<div class='alert alert-danger text-center'>
+                ❌ Email failed: {$mail->ErrorInfo}
+                </div>";
     }
-
-    $msg = "<div class='alert alert-success text-center'>
-            ✅ Emails sent to " . count($emails) . " attendees.
-            </div>";
 }
 
 // Fetch events for dropdown
@@ -52,7 +77,7 @@ if ($eventsStmt === false) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Communicate with Attendees</title>
+    <title>Send Reminder</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
@@ -62,7 +87,7 @@ if ($eventsStmt === false) {
     </a>
 
     <div class="card shadow p-4 mx-auto" style="max-width:600px;">
-        <h3 class="mb-4 text-center">Send Email to Attendees</h3>
+        <h3 class="mb-4 text-center">Send Reminder Email</h3>
 
         <?= $msg ?>
 
@@ -93,6 +118,5 @@ if ($eventsStmt === false) {
         </form>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
